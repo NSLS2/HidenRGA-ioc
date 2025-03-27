@@ -1,0 +1,507 @@
+## Database for Hiden RC Interface RGA
+
+## Global setting
+## Get product ID
+record(stringin, "$(Sys)$(Dev)ID-I")
+{
+	field(DESC, "Product ID")
+	field(DTYP, "stream")
+	field(INP,  "@hiden_rga.proto getID() $(PORT)")
+	field(PINI, 1)
+}
+
+## Set up instrument environment variables
+#  Shutdown mode
+record(longout, "$(Sys)$(Dev)E:SD_Multp-SP")
+{
+	field(DESC, "Shutdown Multiplier")
+	field(LOPR, "0")
+	field(HOPR, "1400")
+	field(EGU,  "V")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)E:SD_Focus-SP")
+{
+	field(DESC, "Shutdown Focus")
+	field(LOPR, "-200")
+	field(HOPR, "0")
+	field(EGU,  "V")
+	field(VAL,  "-90")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)E:SD_DeltaM-SP")
+{
+	field(DESC, "Shutdown Delta-M")
+	field(LOPR, "-100")
+	field(HOPR, "100")
+	field(EGU,  "%")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)Res:SD-SP")
+{
+	field(DESC, "Shutdown Resolution")
+	field(LOPR, "-100")
+	field(HOPR, "100")
+	field(EGU,  "%")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)E:SD_Cage-SP")
+{
+	field(DESC, "Shutdown Cage")
+	field(PREC, "1")
+	field(LOPR, "-10")
+	field(HOPR, "10")
+	field(EGU,  "V")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Enrgy:SD_E-SP")
+{
+	field(DESC, "Shutdown E-Energy")
+	field(LOPR, "4")
+	field(HOPR, "150")
+	field(PREC, "1")
+	field(EGU,  "V")
+	field(VAL,  "70")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Emis:SD-SP")
+{
+	field(DESC, "Shutdown Emission")
+	field(PREC, "3")
+	field(LOPR, "20")
+	field(HOPR, "5000")
+	field(EGU,  "uA")
+	field(VAL,  "20")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Mass:SD-SP")
+{
+	field(DESC, "Shutdown Mass")
+	field(PREC, "2")
+	field(LOPR, "0.4")
+	field(HOPR, "100")
+	field(EGU,  "amu")
+	field(VAL,  "5.5")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)Time:SD_ModeChngDly-SP")
+{
+	field(DESC, "Shutdown Mode-C-Dly")
+	field(LOPR, "0")
+	field(HOPR, "10000000")
+	field(EGU,  "ms")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+#   RGA mode
+record(longout, "$(Sys)$(Dev)E:RGA_Multp-SP")
+{
+	field(DESC, "RGA Multiplier")
+	field(LOPR, "0")
+	field(HOPR, "1400")
+	field(EGU,  "V")
+	field(VAL,  "900")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)E:RGA_Focus-SP")
+{
+	field(DESC, "RGA Focus")
+	field(LOPR, "-200")
+	field(HOPR, "0")
+	field(EGU,  "V")
+	field(VAL,  "-90")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)E:RGA_DeltaM-SP")
+{
+	field(DESC, "RGA Delta-M")
+	field(LOPR, "-100")
+	field(HOPR, "100")
+	field(EGU,  "%")
+	field(VAL,  "30")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)Res:RGA-SP")
+{
+	field(DESC, "RGA Resolution")
+	field(LOPR, "-100")
+	field(HOPR, "100")
+	field(EGU,  "%")
+	field(VAL,  "25")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)E:RGA_Cage-SP")
+{
+	field(DESC, "RGA Cage")
+	field(PREC, "1")
+	field(LOPR, "-10")
+	field(HOPR, "10")
+	field(EGU,  "V")
+	field(VAL,  "3")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Enrgy:RGA_E-SP")
+{
+	field(DESC, "RGA E-Energy")
+	field(LOPR, "4")
+	field(HOPR, "150")
+	field(PREC, "1")
+	field(EGU,  "V")
+	field(VAL,  "70")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Emis:RGA-SP")
+{
+	field(DESC, "RGA Emission")
+	field(PREC, "3")
+	field(LOPR, "20")
+	field(HOPR, "5000")
+	field(EGU,  "uA")
+	field(VAL,  "500")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Mass:RGA-SP")
+{
+	field(DESC, "RGA Mass")
+	field(PREC, "2")
+	field(LOPR, "0.4")
+	field(HOPR, "100")
+	field(EGU,  "amu")
+	field(VAL,  "5.5")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)Time:RGA_ModeChngDly-SP")
+{
+	field(DESC, "RGA Mode-C-Dly")
+	field(LOPR, "0")
+	field(HOPR, "10000000")
+	field(EGU,  "ms")
+	field(VAL,  "1000")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:Env-Cmd")
+{
+	field(DESC, "Environment Cmd")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto globalSet($(Sys),$(Dev)) $(PORT)")	
+	field(SDIS, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+	field(DISV, "1")
+	field(FLNK, "$(Sys)$(Dev)Cmd:Fil-Cmd")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(fanout, "$(Sys)$(Dev)Cmd:Fil-Cmd")
+{
+	field(DESC, "Filament Cmd")
+	field(LNK1, "$(Sys)$(Dev)Cmd:Fil1-Cmd")
+	field(LNK2, "$(Sys)$(Dev)Cmd:Fil2-Cmd")
+}
+
+#  Filament select 
+record(bo, "$(Sys)$(Dev)Cmd:Fil1-Cmd")
+{
+	field(DESC, "RGA F1 Cmd")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto setF1 $(PORT)")	
+	field(SDIS, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+        field(DISV, "1")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+	field(VAL,  "1")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:Fil2-Cmd")
+{
+	field(DESC, "RGA F2 Cmd")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto setF2 $(PORT)")	
+	field(SDIS, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+        field(DISV, "1")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longin, "$(Sys)$(Dev)P:F_RngMin-RB")
+{
+	field(DESC, "Faraday Min Range")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+}
+
+record(longin, "$(Sys)$(Dev)P:F_RngMax-RB")
+{
+	field(DESC, "Faraday Max Range")
+	field(DTYP, "stream")
+	field(INP,  "@hiden_rga.proto getFaradayRng($(Sys),$(Dev)) $(PORT)")	
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+}
+
+record(longin, "$(Sys)$(Dev)P:SEM_RngMin-RB")
+{
+	field(DESC, "SEM Min Range")
+	field(LOPR, "-13")
+	field(HOPR, "-7")
+}
+
+record(longin, "$(Sys)$(Dev)P:SEM_RngMax-RB")
+{
+	field(DESC, "SEM Max Range")
+	field(DTYP, "stream")
+	field(INP,  "@hiden_rga.proto getSEMRng($(Sys),$(Dev)) $(PORT)")	
+	field(LOPR, "-13")
+	field(HOPR, "-7")
+}
+
+# LED status
+record(bi, "$(Sys)$(Dev)Ind:Run-Sts")
+{
+	field(DESC, "Run LED")
+	field(DTYP, "stream")
+        field(INP,  "@hiden_rga.proto getLEDSts($(Sys),$(Dev)) $(PORT)")
+ #       field(SCAN, "5 second")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bi, "$(Sys)$(Dev)Ind:Fil1-Sts")
+{
+	field(DESC, "F1 LED")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bi, "$(Sys)$(Dev)Ind:Fil2-Sts")
+{
+	field(DESC, "F2 LED")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bi, "$(Sys)$(Dev)Ind:Emis-Sts")
+{
+	field(DESC, "F1 LED")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bi, "$(Sys)$(Dev)Ind:Flt-Sts")
+{
+	field(DESC, "Fault LED")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+	field(OSV,  "MAJOR")
+}
+
+record(stringin, "$(Sys)$(Dev)Err-I")
+{
+        field(DESC, "Error Poll")
+}
+
+
+# Emission/filament/over-pressure/over-temperature status
+record(bi, "$(Sys)$(Dev)Emis-Sts")
+{
+        field(DESC, "Emission Sts")
+        field(DTYP, "stream")
+        field(INP,  "@hiden_rga.proto getMiscSts($(Sys),$(Dev)) $(PORT)")
+ #       field(SCAN, "1 second")
+        field(ZNAM, "Fail")
+        field(ONAM, "OK")
+        field(ZSV,  "MINOR")
+#	field(FLNK, "$(Sys)$(Dev)DB:Sts-Calc_")
+}
+
+record(bi, "$(Sys)$(Dev)Sts:Fil-Sts")
+{
+	field(DESC, "Filament Sts")
+	field(ZNAM, "Fail")
+	field(ONAM, "OK")
+	field(ZSV,  "MAJOR")
+}
+
+record(bi, "$(Sys)$(Dev)Trip:OverP-Sts")
+{
+	field(DESC, "Over P Trip Sts")
+	field(ZNAM, "OK")
+	field(ONAM, "OverPressure")
+	field(OSV,  "MAJOR")
+}
+
+record(bi, "$(Sys)$(Dev)Trip:OverT-Sts")
+{
+	field(DESC, "Over Temp Sts")
+	field(ZNAM, "OK")
+	field(ONAM, "OverTemp")
+	field(OSV,  "MAJOR")
+}
+
+# Get mass range and resolution
+record(ai, "$(Sys)$(Dev)Mass:Min-I")
+{
+	field(DESC, "Mass Min")
+	field(PREC, "2")
+}
+
+record(ai, "$(Sys)$(Dev)Mass:Max-I")
+{
+	field(DESC, "Mass Max")
+	field(PREC, "2")
+}
+
+record(ai, "$(Sys)$(Dev)Mass:Res-I")
+{
+	field(DESC, "Mass Res")
+	field(DTYP, "stream")
+	field(PINI, "1")
+	field(INP,  "@hiden_rga.proto massRngRes($(Sys),$(Dev)) $(PORT)")	
+	field(PREC, "2")
+}
+
+# Stop scan
+record(bo, "$(Sys)$(Dev)Cmd:ScanAbort-Cmd")
+{
+	field(DESC, "Stop Scan")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto scanAbort $(PORT)")	
+	field(FLNK, "$(Sys)$(Dev)DB:ScanAbort-Seq_")
+        field(ASG,  "VAWRITE")
+}
+
+#  Disable 'data' command and reset all buffers
+record(seq, "$(Sys)$(Dev)DB:ScanAbort-Seq_")
+{
+	field(DESC, "Stop Scan")
+	field(SELM, "All")
+	field(DO1,  "1")
+	field(DO2,  "1")
+	field(DO3,  "1")
+	field(LNK1, "$(Sys)$(Dev)Cmd:BarStop-Cmd PP")
+	field(LNK2, "$(Sys)$(Dev)Cmd:PrflStop-Cmd PP")
+	field(LNK3, "$(Sys)$(Dev)Cmd:MID_Stop-Cmd PP")
+}
+
+# Operation mode
+record(mbbi, "$(Sys)$(Dev)Mode:Scan-Sts")
+{
+        field(DESC, "Scan Mode")
+	field(ZRST, "None")
+	field(ONST, "Bar Mode")
+	field(TWST, "Prfl Mode")
+	field(THST, "MID Mode")
+	field(FRST, "LD Mode")
+}
+
+record(calcout, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+{
+        field(DESC, "Set Calc")
+	field(INPA, "$(Sys)$(Dev)Mode:Scan-Sts")
+	field(INPB, "0")
+	field(CALC, "A>B?1:0")
+	field(OUT,  "$(Sys)$(Dev)DB:Lck-Sts PP")
+	field(SCAN, "5 second")
+}
+
+record(bi, "$(Sys)$(Dev)DB:Lck-Sts")
+{
+        field(DESC, "Scan Mode")
+	field(ZNAM, "Unlock")
+	field(ONAM, "Locked")
+}
+
+# Error init
+record(bo, "$(Sys)$(Dev)Err:Init-Cmd")
+{
+        field(DESC, "Error Init")
+	field(DTYP, "stream")
+        field(OUT,  "@hiden_rga.proto errInit $(PORT)")
+        field(ASG,  "VAWRITE")
+}
+
+# Switch to shutdown mode after scan stop
+record(bo, "$(Sys)$(Dev)Cmd:SD-Cmd")
+{
+        field(DESC, "Shutwodn")
+        field(DTYP, "stream")
+        field(OUT,  "@hiden_rga.proto shutdown $(PORT)")
+        field(ASG,  "VAWRITE")
+}
+
+# Calc RGA status
+record(calc, "$(Sys)$(Dev)DB:Sts-Calc_")
+{
+        field(DESC, "RGA Status")
+	field(SCAN, "1 second")
+        field(INPA, "$(Sys)$(Dev)Sts:Fil-Sts")
+        field(INPB, "$(Sys)$(Dev)Emis-Sts")
+	field(INPC, "$(Sys)$(Dev)Trip:OverP-Sts")
+	field(INPD, "$(Sys)$(Dev)Ind:Flt-Sts")
+        field(INPE, "$(Sys)$(Dev)Ind:Run-Sts")
+        field(CALC, "((!A)||C||D)?2:(E&&B)?1:0")
+	field(FLNK, "$(Sys)$(Dev)Sts")
+}
+
+record(mbbi, "$(Sys)$(Dev)Sts")
+{
+        field(DESC, "RGA Status")
+	field(INP,  "$(Sys)$(Dev)DB:Sts-Calc_")	
+	field(ZRST, "Off")
+	field(ONST, "OK")
+	field(TWST, "Error")
+	field(ZRSV, "MINOR")
+	field(TWSV, "MAJOR")
+}
+
+record(fanout, "$(Sys)$(Dev)DB:ParProc-FOut_")
+{
+	field(DESC, "Process Par")
+	field(SCAN, "1 second")
+	field(LNK1, "$(Sys)$(Dev)Ind:Run-Sts")
+	field(LNK2, "$(Sys)$(Dev)Emis-Sts")
+}

@@ -1,0 +1,4 @@
+epicsEnvSet("ARCH","linux-x86")
+epicsEnvSet("IOC","iocHidenRGA")
+epicsEnvSet("TOP","/epics/iocs/HidenRGA")
+epicsEnvSet("EPICS_BASE","/usr/lib/epics")

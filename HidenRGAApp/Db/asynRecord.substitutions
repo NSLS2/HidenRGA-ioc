@@ -1,0 +1,5 @@
+file asynRecord.template
+{
+	pattern	{ P		, R		, PORT		, ADDR	, OMAX	, IMAX	}
+		{ XF:03-VA	, "{RGAC:1}"	, XF03VA_RGAC1	, 0	, 0	, 0	}
+}

@@ -1,0 +1,763 @@
+# Protocol for Hiden HAL RC 201
+
+# Huijuan Xu (hxu@bnl.gov), 2011
+
+OutTerminator = "\r";
+InTerminator = "\r\n";
+Separator = ",";
+
+LockTimeout = 1000;
+ReplyTimeout = 200;
+ReadTimeout =  50;
+WriteTimeout = 50;
+extraInput = Ignore;
+
+# Get ID
+getID {
+	out "pget ID";
+	in  "%#s";
+}
+
+# Set up global environment parameters
+globalSet {
+	out "lput multiplier %(\$1\$2E:SD_Multp-SP.VAL)d %(\$1\$2E:RGA_Multp-SP.VAL)d";
+	out "lput focus %(\$1\$2E:SD_Focus-SP.VAL)d %(\$1\$2E:RGA_Focus-SP.VAL)d";
+	out "lput delta-m %(\$1\$2E:SD_DeltaM-SP.VAL)d %(\$1\$2E:RGA_DeltaM-SP.VAL)d";
+	out "lput resolution  %(\$1\$2Res:SD-SP.VAL)d %(\$1\$2Res:RGA-SP.VAL)d";
+	out "lput cage %(\$1\$2E:SD_Cage-SP.VAL)f %(\$1\$2E:RGA_Cage-SP.VAL)f";
+	out "lput electron-energy %(\$1\$2Enrgy:SD_E-SP.VAL)f %(\$1\$2Enrgy:RGA_E-SP.VAL)f";
+	out "lput emission %(\$1\$2Emis:SD-SP.VAL)f %(\$1\$2Emis:RGA-SP.VAL)f";
+	out "lput mass %(\$1\$2Mass:SD-SP.VAL)f %(\$1\$2Mass:RGA-SP.VAL)f";
+	out "lput mode-change-delay %(\$1\$2Time:SD_ModeChngDly-SP.VAL)d %(\$1\$2Time:RGA_ModeChngDly-SP.VAL)d";
+	out "l999 scan";
+	out "sout NUL:";
+	out "lset enable 1";
+	out "lini all";
+}
+
+# Select filament
+setF1 {
+	out "lput F1 0 %{0|1}";
+}
+
+setF2 {
+	out "lput F2 0 %{0|1}";
+}
+
+# Get the logical range for Faraday and SEM
+getFaradayRng {
+	out "lmin Faraday_range";
+        in  "%(\$1\$2P:F_RngMin-RB.VAL)d";
+	out "lmax Faraday_range";
+        in  "%d";
+}
+
+getSEMRng {
+	out "lmin SEM_range";
+        in  "%(\$1\$2P:SEM_RngMin-RB.VAL)d";
+	out "lmax SEM_range";
+        in  "%d";
+}
+
+# LED status
+getLEDSts {
+	out "lget run-LED";
+	in  "%{0|1}"; 
+	@mismatch {in "";}
+	out "lget F1-LED";
+        in  "%(\$1\$2Ind:Fil1-Sts.VAL){0|1}";
+	@mismatch {in "";}
+	out "lget F2-LED";
+        in  "%(\$1\$2Ind:Fil2-Sts.VAL){0|1}";
+	@mismatch {in "";}
+	out "lget emission-LED";
+        in  "%(\$1\$2Ind:Emis-Sts.VAL){0|1}";
+	@mismatch {in "";}
+	out "lget fault-LED";
+        in  "%(\$1\$2Ind:Flt-Sts.VAL){0|1}";	
+	@mismatch {in "";}
+	out "rerr";
+        out "rbuf";
+        in  "%(\$1\$2Err-I.VAL)s";	
+}
+
+# Emission/filament/over-pressure/over-temperature status
+getMiscSts {
+	out "lget emok";
+        in  "%{0|1}";
+	@mismatch {in "";}
+        out "lget filok";
+        in  "%(\$1\$2Sts:Fil-Sts.VAL){0|1}";
+	@mismatch {in "";}
+        out "lget ptrip";
+        in  "%(\$1\$2Trip:OverP-Sts.VAL){0|1}";
+	@mismatch {in "";}
+        out "lget overtemp";
+        in  "%(\$1\$2Trip:OverT-Sts.VAL){0|1}";
+	@mismatch {in "";}
+}
+
+# Pause scan
+scanPause {
+	out "sset State Pause:";
+}
+
+# Continue scan
+scanContinue {
+	out "sset state";
+}
+
+# Stop scan immediately
+scanAbort {
+	out "sset state Abort:";
+	out "sval";
+	out "lset mode 0";
+}
+
+# Stop at the end of current cycle
+scanStop {
+	out "sset state Stop:";
+	out "sval";
+}
+
+# Get mass range and resolution
+massRngRes {
+	out "lmin mass";
+	in  "%(\$1\$2Mass:Min-I.VAL)f";
+	out "lmax mass";
+	in  "%(\$1\$2Mass:Max-I.VAL)f";
+	out "lres mass";
+	in  "%f";
+}
+
+# Set local environment parameters
+localSet {
+	out "sset env focus %(\$1\$2E:\$3Focus-SP.VAL)d delta-m %(\$1\$2E:\$3DeltaM-SP.VAL)d resolution %(\$1\$2Res:\$3-SP.VAL)d cage %(\$1\$2E:\$3Cage-SP.VAL)f electron-energy %(\$1\$2Enrgy:\$3E-SP.VAL)f emission %(\$1\$2Emis:\$3-SP.VAL)f mass %(\$1\$2Mass:\$3-SP.VAL)f mode-change-delay %(\$1\$2Time:\$3ModeChngDly-SP.VAL)d";
+}
+
+# Set MID local environment parameters
+localMIDSet {
+        out "sset env focus %(\$1\$2E:MID_Focus-SP.VAL)d delta-m %(\$1\$2E:MID_DeltaM-SP.VAL)d resolution %(\$1\$2Res:MID-SP.VAL)d cage %(\$1\$2E:MID_Cage-SP.VAL)f electron-energy %(\$1\$2Enrgy:MID_E-SP.VAL)f emission %(\$1\$2Emis:MID-SP.VAL)f mass %(\$1\$2Mass:MID-SP.VAL)f mode-change-delay %(\$1\$2Time:MID_ModeChngDly-SP.VAL)d";
+}
+
+
+# Set up a bar scan
+barSet {
+	out "sdel all";
+	in  "";
+	out "sset scan Ascans";
+	in  "";
+	out "sset row 1";
+	in  "";
+	out "sset output mass";
+	in  "";
+	out "sset start %(\$1\$2Mass:BarStart-SP.VAL)f";
+	in  "";
+	out "sset stop %(\$1\$2Mass:BarStop-SP.VAL)f";
+	in  "";
+	out "sset step 1.00";
+	in  "";
+	out "sset input %(\$1\$2Type:BarDetr-Sel.VAL){Faraday|SEM}";
+	in  "";
+	out "sset low %(\$1\$2P:BarLo-SP.VAL)d";
+	in  "";
+	out "sset high %(\$1\$2P:BarHi-SP.VAL)d";
+	in  "";
+	out "sset current %(\$1\$2P:BarCurt-SP.VAL)d";
+	in  "";
+	out "sset dwell %(\$1\$2Time:BarDwell-SP.VAL)d\%";
+	in  "";
+	out "sset settle %(\$1\$2Time:BarSetl-SP.VAL)d\%";
+	in  "";
+	out "sset mode 1";
+	in  "";
+	out "sset report 21";
+	in  "";
+	out "sset options HighDynamicRange:,SaveScanDev:,BeamOnBefore:,BeamOffAfter:";
+#	out "sset options SaveScanDev:,BeamOnBefore:,BeamOffAfter:";
+	in  "";
+	out "sset zero 1";
+	in  "";
+	out "sset cycles %(\$1\$2Cnt:BarCyc-SP.VAL)d";
+	in  "";
+	out "sset interval 0.00";
+	in  "";
+	out "tdel all";
+	in  "";
+	out "pset terse 1";
+	in  "";
+	out "pset points 50";
+	in  "";
+	out "data on";
+	in  "";
+	out "serr ERROR:";
+	in  "";	
+	out "sout NUL:";
+}
+
+barStart {
+	out "lini Ascans";
+	in  "";
+	out "sjob lget Ascans";
+	in  "%(\$1\$2ID:BarTask-I.VAL)d,%(\$1\$2ID:BarJob-I.VAL)d,";
+}
+
+barDataAll {
+	out "data all";
+	in  "%#s";
+	@mismatch {in "";}
+}
+
+barData {
+	out "data";
+	in  "%#s";
+	@mismatch {in "";}	
+}
+
+barStop {
+	out "stop %(\$1\$2ID:BarTask-I.VAL)d %(\$1\$2ID:BarJob-I.VAL)d";
+	out "sval";
+	out "data stop";
+	in  "%(\$1\$2Val:BarStop-Wf.VAL)s";
+	out "lset mode 0";
+	in  "";
+}
+
+# Set up a profile scan
+prflSet {
+	out "sdel all";
+	in  "";
+	out "sset scan Ascans";
+	in  "";
+	out "sset row 1";
+	in  "";
+	out "sset output mass";
+	in  "";
+	out "sset start %(\$1\$2Mass:PrflStart-SP.VAL)f";
+	in  "";
+	out "sset stop %(\$1\$2Mass:PrflStop-SP.VAL)f";
+	in  "";
+	out "sset step %(\$1\$2Step:Prfl-SP.VAL)f";
+	in  "";
+	out "sset input %(\$1\$2Type:PrflDetr-Sel.VAL){Faraday|SEM}";
+	in  "";
+	out "sset low %(\$1\$2P:PrflLo-SP.VAL)d";
+	in  "";
+	out "sset high %(\$1\$2P:PrflHi-SP.VAL)d";
+	in  "";
+	out "sset current %(\$1\$2P:PrflCurt-SP.VAL)d";
+	in  "";
+	out "sset dwell %(\$1\$2Time:PrflDwell-SP.VAL)d\%";
+	in  "";
+	out "sset settle %(\$1\$2Time:PrflSetl-SP.VAL)d\%";
+	in  "";
+	out "sset mode 1";
+	in  "";
+	out "sset report 21";
+	in  "";
+	out "sset zero 1";
+	in  "";
+	out "sset cycles %(\$1\$2Cnt:PrflCyc-SP.VAL)d";
+	in  "";
+	out "pset terse 1";
+	in  "";
+	out "pset points 50";
+	in  "";
+	out "sset interval 0.00";
+	in  "";
+	out "tdel all";
+	in  "";
+	out "data on";
+	in  "";
+	out "serr ERROR:";
+	in  "";	
+	out "sout NUL:";
+	in  "";
+	out "sset options SaveScanDev:,BeamOnBefore:,BeamOffAfter:,HighDynamicRange:";
+	in  "";
+	out "sjob save";
+}
+
+prflStart {
+	out "lini Ascans";
+	in  "";
+	out "sjob lget Ascans";
+	in  "%(\$1\$2ID:PrflTask-I.VAL)d,%(\$1\$2ID:PrflJob-I.VAL)d,";
+}
+
+prflDataAll {
+	out "data all";
+	in  "%#s";
+	@mismatch {in "";}	
+}
+
+prflData {
+	out "data";
+	in  "%#s";
+	@mismatch {in "";}
+}
+
+prflStop {
+	out "stop %(\$1\$2ID:PrflTask-I.VAL)d %(\$1\$2ID:PrflJob-I.VAL)d";
+	out "data stop";
+	in  "%(\$1\$2Val:PrflStop-Wf.VAL)s";
+	out "lset mode 0";
+	in  "";
+}
+
+
+# Set up a MID scan
+midSet1 {
+	out "sdel all";
+	in  "";
+	out "sset scan Cscans";
+	in  "";
+	out "sset row 1";
+	in  "";
+	out "sset output mass";
+	in  "";
+	out "sset start %(\$1\$2Mass:MID1-SP.VAL)f";
+	in  "";
+	out "sset stop %(\$1\$2Mass:MID1-SP.VAL)f";
+	in  "";
+	out "sset step 1.00";
+	in  "";
+	out "sset input %(\$1\$2Type:MID1Detr-Sel.VAL){Faraday|SEM}";
+	in  "";
+	out "sset low %(\$1\$2P:MID1Lo-SP.VAL)d";
+	in  "";
+	out "sset high %(\$1\$2P:MID1Hi-SP.VAL)d";
+	in  "";
+	out "sset current %(\$1\$2P:MID1Curt-SP.VAL)d";
+	in  "";
+	out "sset dwell 100\%";
+	in  "";
+	out "sset settle 100\%";
+	in  "";
+	out "sset mode 1";
+	in  "";
+	out "sset report 5";
+	in  "";
+	out "sset zero 1";
+	in  "";	
+	out "sset options SaveScanDev:,BeamOnBefore:,BeamOffAfter:";
+	in  "";
+}
+
+midSet2 {
+	out "sset row 2";
+	in  "";
+	out "sset output mass";
+	in  "";
+	out "sset start %(\$1\$2Mass:MID2-SP.VAL)f";
+	in  "";
+	out "sset stop %(\$1\$2Mass:MID2-SP.VAL)f";
+	in  "";
+	out "sset step 1.00";
+	in  "";
+	out "sset input %(\$1\$2Type:MID2Detr-Sel.VAL){Faraday|SEM}";
+	in  "";
+	out "sset low %(\$1\$2P:MID2Lo-SP.VAL)d";
+	in  "";
+	out "sset high %(\$1\$2P:MID2Hi-SP.VAL)d";
+	in  "";
+	out "sset current %(\$1\$2P:MID2Curt-SP.VAL)d";
+	in  "";
+	out "sset dwell 100\%";
+	in  "";
+	out "sset settle 100\%";
+	in  "";
+	out "sset mode 1";
+	in  "";
+	out "sset report 5";
+	in  "";
+	out "sset zero 1";
+	in  "";	
+	out "sset options SaveScanDev:,BeamOnBefore:,BeamOffAfter:";
+	in  "";
+}
+
+midSet3 {
+	out "sset row 3";
+	in  "";
+	out "sset output mass";
+	in  "";
+	out "sset start %(\$1\$2Mass:MID3-SP.VAL)f";
+	in  "";
+	out "sset stop %(\$1\$2Mass:MID3-SP.VAL)f";
+	in  "";
+	out "sset step 1.00";
+	in  "";
+	out "sset input %(\$1\$2Type:MID3Detr-Sel.VAL){Faraday|SEM}";
+	in  "";
+	out "sset low %(\$1\$2P:MID3Lo-SP.VAL)d";
+	in  "";
+	out "sset high %(\$1\$2P:MID3Hi-SP.VAL)d";
+	in  "";
+	out "sset current %(\$1\$2P:MID3Curt-SP.VAL)d";
+	in  "";
+	out "sset dwell 100\%";
+	in  "";
+	out "sset settle 100\%";
+	in  "";
+	out "sset mode 1";
+	in  "";
+	out "sset report 5";
+	in  "";
+	out "sset zero 1";
+	in  "";
+	out "sset options SaveScanDev:,BeamOnBefore:,BeamOffAfter:";
+	in  "";
+}
+
+midSet4 {
+	out "sset row 4";
+	in  "";
+	out "sset output mass";
+	in  "";
+	out "sset start %(\$1\$2Mass:MID4-SP.VAL)f";
+	in  "";
+	out "sset stop %(\$1\$2Mass:MID4-SP.VAL)f";
+	in  "";
+	out "sset step 1.00";
+	in  "";
+	out "sset input %(\$1\$2Type:MID4Detr-Sel.VAL){Faraday|SEM}";
+	in  "";
+	out "sset low %(\$1\$2P:MID4Lo-SP.VAL)d";
+	in  "";
+	out "sset high %(\$1\$2P:MID4Hi-SP.VAL)d";
+	in  "";
+	out "sset current %(\$1\$2P:MID4Curt-SP.VAL)d";
+	in  "";
+	out "sset dwell 100\%";
+	in  "";
+	out "sset settle 100\%";
+	in  "";
+	out "sset mode 1";
+	in  "";
+	out "sset report 5";
+	in  "";
+	out "sset zero 1";
+	in  "";
+	out "sset options SaveScanDev:,BeamOnBefore:,BeamOffAfter:";
+	in  "";
+}
+
+midSet5 {
+	out "sset row 5";
+	in  "";
+	out "sset output mass";
+	in  "";
+	out "sset start %(\$1\$2Mass:MID5-SP.VAL)f";
+	in  "";
+	out "sset stop %(\$1\$2Mass:MID5-SP.VAL)f";
+	in  "";
+	out "sset step 1.00";
+	in  "";
+	out "sset input %(\$1\$2Type:MID5Detr-Sel.VAL){Faraday|SEM}";
+	in  "";
+	out "sset low %(\$1\$2P:MID5Lo-SP.VAL)d";
+	in  "";
+	out "sset high %(\$1\$2P:MID5Hi-SP.VAL)d";
+	in  "";
+	out "sset current %(\$1\$2P:MID5Curt-SP.VAL)d";
+	in  "";
+	out "sset dwell 100\%";
+	in  "";
+	out "sset settle 100\%";
+	in  "";
+	out "sset mode 1";
+	in  "";
+	out "sset report 5";
+	in  "";
+	out "sset zero 1";
+	in  "";
+	out "sset options SaveScanDev:,BeamOnBefore:,BeamOffAfter:";
+	in  "";
+}
+
+midSet6 {
+        out "sset row 6";
+        in  "";
+        out "sset output mass";
+        in  "";
+        out "sset start %(\$1\$2Mass:MID6-SP.VAL)f";
+        in  "";
+        out "sset stop %(\$1\$2Mass:MID6-SP.VAL)f";
+        in  "";
+        out "sset step 1.00";
+        in  "";
+        out "sset input %(\$1\$2Type:MID6Detr-Sel.VAL){Faraday|SEM}";
+        in  "";
+        out "sset low %(\$1\$2P:MID6Lo-SP.VAL)d";
+        in  "";
+        out "sset high %(\$1\$2P:MID6Hi-SP.VAL)d";
+        in  "";
+        out "sset current %(\$1\$2P:MID6Curt-SP.VAL)d";
+        in  "";
+        out "sset dwell 100\%";
+        in  "";
+        out "sset settle 100\%";
+        in  "";
+        out "sset mode 1";
+        in  "";
+        out "sset report 5";
+        in  "";
+        out "sset zero 1";
+        in  "";
+	out "sset options SaveScanDev:,BeamOnBefore:,BeamOffAfter:";
+	in  "";
+}
+
+midSet7 {
+        out "sset row 7";
+        in  "";
+        out "sset output mass";
+        in  "";
+        out "sset start %(\$1\$2Mass:MID7-SP.VAL)f";
+        in  "";
+        out "sset stop %(\$1\$2Mass:MID7-SP.VAL)f";
+        in  "";
+        out "sset step 1.00";
+        in  "";
+        out "sset input %(\$1\$2Type:MID7Detr-Sel.VAL){Faraday|SEM}";
+        in  "";
+        out "sset low %(\$1\$2P:MID7Lo-SP.VAL)d";
+        in  "";
+        out "sset high %(\$1\$2P:MID7Hi-SP.VAL)d";
+        in  "";
+        out "sset current %(\$1\$2P:MID7Curt-SP.VAL)d";
+        in  "";
+        out "sset dwell 100\%";
+        in  "";
+        out "sset settle 100\%";
+        in  "";
+        out "sset mode 1";
+        in  "";
+        out "sset report 5";
+        in  "";
+        out "sset zero 1";
+        in  "";
+	out "sset options SaveScanDev:,BeamOnBefore:,BeamOffAfter:";
+	in  "";
+}
+
+midSet8 {
+        out "sset row 8";
+        in  "";
+        out "sset output mass";
+        in  "";
+        out "sset start %(\$1\$2Mass:MID8-SP.VAL)f";
+        in  "";
+        out "sset stop %(\$1\$2Mass:MID8-SP.VAL)f";
+        in  "";
+        out "sset step 1.00";
+        in  "";
+        out "sset input %(\$1\$2Type:MID8Detr-Sel.VAL){Faraday|SEM}";
+        in  "";
+        out "sset low %(\$1\$2P:MID8Lo-SP.VAL)d";
+        in  "";
+        out "sset high %(\$1\$2P:MID8Hi-SP.VAL)d";
+        in  "";
+        out "sset current %(\$1\$2P:MID8Curt-SP.VAL)d";
+        in  "";
+        out "sset dwell 100\%";
+        in  "";
+        out "sset settle 100\%";
+        in  "";
+        out "sset mode 1";
+        in  "";
+        out "sset report 5";
+        in  "";
+        out "sset zero 1";
+        in  "";
+	out "sset options SaveScanDev:,BeamOnBefore:,BeamOffAfter:";
+	in  "";
+}
+
+midSet9 {
+        out "sset row 9";
+        in  "";
+        out "sset output mass";
+        in  "";
+        out "sset start %(\$1\$2Mass:MID9-SP.VAL)f";
+        in  "";
+        out "sset stop %(\$1\$2Mass:MID9-SP.VAL)f";
+        in  "";
+        out "sset step 1.00";
+        in  "";
+        out "sset input %(\$1\$2Type:MID9Detr-Sel.VAL){Faraday|SEM}";
+        in  "";
+        out "sset low %(\$1\$2P:MID9Lo-SP.VAL)d";
+        in  "";
+        out "sset high %(\$1\$2P:MID9Hi-SP.VAL)d";
+        in  "";
+        out "sset current %(\$1\$2P:MID9Curt-SP.VAL)d";
+        in  "";
+        out "sset dwell 100\%";
+        in  "";
+        out "sset settle 100\%";
+        in  "";
+        out "sset mode 1";
+        in  "";
+        out "sset report 5";
+        in  "";
+        out "sset zero 1";
+        in  "";
+	out "sset options SaveScanDev:,BeamOnBefore:,BeamOffAfter:";
+	in  "";
+}
+
+midSet {
+	out "sset cycles %(\$1\$2Cnt:MID_Cyc-SP.VAL)d";
+	in  "";
+	out "sset interval 0.00";
+	in  "";
+	out "tdel all";
+	in  "";
+	out "pset terse 1";
+	in  "";
+	out "pset points 50";
+	in  "";
+	out "serr ERROR:";
+	out "sout NUL:";
+	out "data on";
+	in  "";
+	out "sjob lini Cscans";
+	in  "";
+}
+
+midStart {
+	out "sjob lget Cscans";
+	in  "%(\$1\$2ID:MID_Task-I.VAL)d,%(\$1\$2ID:MID_Job-I.VAL)d,";
+}
+
+midDataAll {
+	out "data all";
+	in  "%#s";
+	@mismatch {in "";}
+}
+
+midData {
+	out "data";
+	in  "%#s";
+	@mismatch {in "";}
+}
+
+midStop {
+	out "stop %(\$1\$2ID:MID_Task-I.VAL)d %(\$1\$2ID:MID_Job-I.VAL)d";
+	out "data stop";
+	out "lset mode 0";
+	in  "";
+}
+
+errInit {
+	out "serr ERROR:";
+}
+
+shutdown {
+	out "lset mode 0";
+}
+
+getMultpID {
+	out "lid# multiplier";
+	in  "%d";
+}
+
+startDegas {
+	out "lset mode 1";
+	in  "";
+	out "lset F1 %(\$1\$2Cmd:DegasFil1-Cmd.VAL){0|1}";
+	in  "";
+	out "lset F2 %(\$1\$2Cmd:DegasFil2-Cmd.VAL){0|1}";
+	in  "";
+	out "lget multiplier";
+	in  "%(\$1\$2E:Multp-RB.VAL)d";
+	out "lset multiplier 0";
+	in  "";
+	out "lset degas 1";
+	in  "";
+}
+
+stopDegas {	
+	out "lset degas 0";
+	in  "";	
+	out "lset F1 1";
+	in  "";
+	out "lset F2 0";
+	in  "";	
+	out "lset multiplier %(\$1\$2E:Multp-RB.VAL)d";
+	in  "";
+	out "lset mode 0";
+	in  "";
+}
+
+# Leak detection scan
+ldSet {
+        out "sdel all";
+        in  "";
+        out "sset scan Dscans";
+        in  "";
+        out "sset row 1";
+        in  "";
+        out "sset output mass";
+        in  "";
+        out "sset start %(\$1\$2Mass:LD_Start-SP.VAL)f";
+        in  "";
+        out "sset stop %(\$1\$2Mass:LD_Start-SP.VAL)f";
+        in  "";
+        out "sset step 1.00";
+        in  "";
+        out "sset input %(\$1\$2Type:LD_Detr-Sel.VAL){Faraday|SEM}";
+        in  "";
+        out "sset low %(\$1\$2P:LD_Lo-SP.VAL)d";
+        in  "";
+        out "sset high %(\$1\$2P:LD_Hi-SP.VAL)d";
+        in  "";
+        out "sset current %(\$1\$2P:LD_Curt-SP.VAL)d";
+        in  "";
+        out "sset dwell  %(\$1\$2Time:LD_Dwell-SP.VAL)d\%";
+        in  "";
+        out "sset settle  %(\$1\$2Time:LD_Setl-SP.VAL)d\%";
+        in  "";
+        out "sset mode 1";
+        in  "";
+        out "sset report 21";
+        in  "";
+        out "sset zero 1";
+        in  "";
+        out "sset cycles %(\$1\$2Cnt:LD_Cyc-SP.VAL)d";
+        in  "";
+        out "pset terse 1";
+        in  "";
+        out "pset points 50";
+        in  "";
+        out "sset interval 0.20";
+        in  "";
+        out "tdel all";
+        in  "";
+        out "data on";
+        in  "";
+        out "serr ERROR:";
+        in  "";
+        out "sout NUL:";
+        in  "";
+        out "sset options HighDynamicRange:,SaveScanDev:,BeamOnBefore:,BeamOffAfter:";
+        in  "";
+        out "sjob save";
+}
+
+ldStart {
+        out "sjob lini Dscans";
+        in  "";
+        out "sjob lget Dscans";
+        in  "%(\$1\$2ID:LD_Task-I.VAL)d,%(\$1\$2ID:LD_Job-I.VAL)d,";
+        out "data all";
+}
+
+ldStop {
+        out "stop %(\$1\$2ID:LD_Task-I.VAL)d %(\$1\$2ID:LD_Job-I.VAL)d";
+        out "data stop";
+        out "lset mode 0";
+        in  "";
+}

@@ -1,0 +1,30 @@
+file hiden_rga_global.template
+{
+	pattern { Sys		, Dev		, PORT		}
+	 	{ XF:03-VA	, "{RGA:1}"	, XF03VA_RGAC1	}
+}
+
+file hiden_rga_bar.template
+{
+	pattern { Sys		, Dev		, PORT		}
+	 	{ XF:03-VA	, "{RGA:1}"	, XF03VA_RGAC1	}
+}
+
+file hiden_rga_prfl.template
+{
+	pattern { Sys		, Dev		, PORT		}
+	 	{ XF:03-VA	, "{RGA:1}"	, XF03VA_RGAC1	}
+}
+
+file hiden_rga_mid.template
+{
+	pattern { Sys		, Dev		, PORT		}
+	 	{ XF:03-VA	, "{RGA:1}"	, XF03VA_RGAC1	}
+}
+
+file hiden_rga_degas.template
+{
+        pattern { Sys           , Dev           , PORT          }
+                { XF:03-VA     , "{RGA:1}"	, XF03VA_RGAC1	}
+}
+

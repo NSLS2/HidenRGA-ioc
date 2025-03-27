@@ -1,0 +1,774 @@
+## Database for Hiden RC Interface RGA
+
+## Set up parameters for bar mode
+# Set the start mass
+record(ao, "$(Sys)$(Dev)Mass:BarStart-SP")
+{
+	field(DESC, "Set Start Mass")
+	field(LOPR, "1.0")
+	field(HOPR, "100.0")
+	field(VAL,  "1")
+	field(FLNK, "$(Sys)$(Dev)Cnt:Bar-Calc")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the stop mass
+record(ao, "$(Sys)$(Dev)Mass:BarStop-SP")
+{
+	field(DESC, "Set Stop Mass")
+	field(LOPR, "1.0")
+	field(HOPR, "100.0")
+	field(VAL,  "100")
+	field(FLNK, "$(Sys)$(Dev)Cnt:Bar-Calc")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(calc, "$(Sys)$(Dev)Cnt:Bar-Calc")
+{
+        field(DESC, "Mass Point")
+        field(INPA, "$(Sys)$(Dev)Mass:BarStart-SP")
+	field(INPB, "$(Sys)$(Dev)Mass:BarStop-SP")
+        field(CALC, "B-A+1")
+        field(VAL,  "100")
+}
+
+# Set detector type
+record(mbbo, "$(Sys)$(Dev)Type:BarDetr-Sel")
+{
+	field(DESC, "Set Detector Type")
+	field(ZRST, "Faraday")
+	field(ONST, "SEM")
+	field(VAL,  "1")
+	field(FLNK, "$(Sys)$(Dev)DB:BarRng-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+#  Check autoranging
+record(bo, "$(Sys)$(Dev)P:BarAutoRng-Sel")
+{
+	field(DESC, "Set Autoranging")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(VAL,  "1")
+	field(FLNK, "$(Sys)$(Dev)DB:BarRng-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Download data to controller
+record(fanout, "$(Sys)$(Dev)DB:BarRng-FOut_")
+{
+	field(DESC, "Range Fanout")
+	field(SDIS, "$(Sys)$(Dev)P:BarAutoRng-Sel")
+	field(DISV, "0")
+	field(LNK1, "$(Sys)$(Dev)DB:BarF_Rng-Seq_")
+	field(LNK2, "$(Sys)$(Dev)DB:BarSEM_Rng-Seq_")
+}
+
+#  Set autorange 
+record(seq, "$(Sys)$(Dev)DB:BarF_Rng-Seq_")
+{
+	field(DESC, "Faraday Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:BarDetr-Sel")
+	field(DISV, "1")
+	field(DOL1, "$(Sys)$(Dev)P:F_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:BarLo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:BarHi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:BarCurt-SP PP")
+}
+
+record(seq, "$(Sys)$(Dev)DB:BarSEM_Rng-Seq_")
+{
+	field(DESC, "SEM Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:BarDetr-Sel")
+	field(DISV, "0")
+	field(DOL1, "$(Sys)$(Dev)P:SEM_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:BarLo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:BarHi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:BarCurt-SP PP")
+}
+
+# Set the low pressure range limit for autoranging
+record(longout, "$(Sys)$(Dev)P:BarLo-SP")
+{
+	field(DESC, "Set Low Pr")
+	field(LOPR, "-13")
+	field(HOPR, "-10")
+	field(VAL,  "-13")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the high pressure limit for autoranging
+record(longout, "$(Sys)$(Dev)P:BarHi-SP")
+{
+	field(DESC, "Set High Pr")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the initial range
+record(longout, "$(Sys)$(Dev)P:BarCurt-SP")
+{
+	field(DESC, "Set Current")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set dwell time
+record(longout, "$(Sys)$(Dev)Time:BarDwell-SP")
+{
+	field(DESC, "Set DwellK")
+	field(LOPR, "1")
+	field(HOPR, "6000")
+	field(VAL,  "100")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(bo, "$(Sys)$(Dev)Time:BarDwell-Cmd")
+{
+	field(DESC, "DwellK Opt")
+	field(ZNAM, "Normal")
+	field(ONAM, "Low Noise")
+	field(VAL,  "0")
+	field(FLNK, "$(Sys)$(Dev)DB:BarDwellTime-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Download data to controller
+record(fanout, "$(Sys)$(Dev)DB:BarDwellTime-FOut_")
+{
+	field(DESC, "DwellK Fanout")
+	field(LNK1, "$(Sys)$(Dev)DB:BarDwell1Time-Seq_")
+	field(LNK2, "$(Sys)$(Dev)DB:BarDwell2Time-Seq_")
+}
+
+#  Set autorange 
+record(seq, "$(Sys)$(Dev)DB:BarDwell1Time-Seq_")
+{
+	field(DESC, "Normal Dwell")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Time:BarDwell-Cmd")
+	field(DISV, "1")
+	field(DO1,  "100")
+	field(DO2,  "100")
+	field(LNK1, "$(Sys)$(Dev)Time:BarDwell-SP PP")
+	field(LNK2, "$(Sys)$(Dev)Time:BarSetl-SP PP")
+}
+
+record(seq, "$(Sys)$(Dev)DB:BarDwell2Time-Seq_")
+{
+	field(DESC, "Low Noise Dwell")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Time:BarDwell-Cmd")
+	field(DISV, "0")
+	field(DO1,  "400")
+	field(DO2,  "400")
+	field(LNK1, "$(Sys)$(Dev)Time:BarDwell-SP PP")
+	field(LNK2, "$(Sys)$(Dev)Time:BarSetl-SP PP")
+}
+
+# Set settle time
+record(longout, "$(Sys)$(Dev)Time:BarSetl-SP")
+{
+	field(DESC, "Set SettleK")
+	field(LOPR, "1")
+	field(HOPR, "6000")
+	field(VAL,  "100")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the cycle number
+record(longout, "$(Sys)$(Dev)Cnt:BarCyc-SP")
+{
+	field(DESC, "Set Cycles")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(bo, "$(Sys)$(Dev)Cnt:BarCont-Cmd")
+{
+	field(DESC, "Continuous Cycles")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(VAL,  "1")
+	field(FLNK, "$(Sys)$(Dev)Cnt:BarCont-SP")
+        field(ASG,  "VAWRITE")
+}
+
+record(longout, "$(Sys)$(Dev)Cnt:BarCont-SP")
+{
+	field(DESC, "Continuous Cycles")
+	field(SDIS, "$(Sys)$(Dev)Cnt:BarCont-Cmd")
+	field(DISV, "0")
+	field(VAL,  "0")
+	field(OUT,  "$(Sys)$(Dev)Cnt:BarCyc-SP")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Parameters set for bar mode download to RGA
+record(bo, "$(Sys)$(Dev)Cmd:BarSet-Cmd")
+{
+	field(DESC, "Set Bar Para")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto barSet($(Sys),$(Dev)) $(PORT)")
+	field(SDIS, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+        field(DISV, "1")
+        field(ASG,  "VAWRITE")
+}
+
+# Initialize and Set up bar scan
+record(bo, "$(Sys)$(Dev)Cmd:BarStart-Cmd")
+{
+	field(DESC, "Set Bar Scan")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto barStart($(Sys),$(Dev)) $(PORT)")
+	field(SDIS, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+        field(DISV, "1")
+	field(FLNK, "$(Sys)$(Dev)Cmd:BarDataAll-Buf_")
+        field(ASG,  "VAWRITE")
+}
+
+## Send 'data all' command to get all stored data
+record(waveform,"$(Sys)$(Dev)Cmd:BarDataAll-Buf_")
+{
+	field(DESC, "Data all Response")
+	field(DTYP, "stream")
+	field(INP,  "@hiden_rga.proto barDataAll $(PORT)")
+	field(FTVL, "CHAR")
+	field(NELM, "1000")
+	field(FLNK, "$(Sys)$(Dev)DB:Bar-FOut_")
+}
+
+record(fanout, "$(Sys)$(Dev)DB:Bar-FOut_")
+{
+	field(DESC, "Bar Scan Fanout")
+	field(LNK1, "$(Sys)$(Dev)DB:BarStart-Seq_")
+	field(LNK2, "$(Sys)$(Dev)ID:BarTask-I")
+}
+
+# Get task id
+record(longin, "$(Sys)$(Dev)ID:BarTask-I")
+{
+	field(DESC, "Bar Task ID")
+	field(FLNK, "$(Sys)$(Dev)ID:BarJob-I")
+}
+
+record(longin, "$(Sys)$(Dev)ID:BarJob-I")
+{
+	field(DESC, "Bar Job ID")
+}
+
+#  Enable 'data' command and reset all buffers
+record(seq, "$(Sys)$(Dev)DB:BarStart-Seq_")
+{
+	field(DESC, "Start Bar Scan")
+	field(SELM, "All")
+	field(DO1,  "7")
+	field(DO2,  "1")
+	field(DO3,  "1")
+	field(DO4,  "1")
+	field(DO5,  "0")
+	field(LNK1, "$(Sys)$(Dev)Cmd:Bar-Buf.SCAN PP")
+	field(LNK2, "$(Sys)$(Dev)DB:BarProc-Sts_ PP")
+	field(LNK3, "$(Sys)$(Dev)Mode:Scan-Sts PP")
+	field(LNK4, "$(Sys)$(Dev)DB:BarDataAll-Sts_")
+	field(LNK5, "$(Sys)$(Dev)DB:ParProc-FOut_.SCAN PP")
+	field(DLY5, "10")
+}
+
+record(bi, "$(Sys)$(Dev)DB:BarDataAll-Sts_")
+{
+	field(DESC, "Data all Cmd Proc")
+	field(ZNAM, "No Proc")
+	field(ONAM, "Need Proc")
+}
+
+#  Disable 'data' command
+record(seq, "$(Sys)$(Dev)DB:BarStop-Seq_")
+{
+	field(DESC, "Stop Bar Scan")
+	field(SELM, "All")
+	field(DO1,  "0")
+	field(DO2,  "1")
+	field(DO3,  "0")
+	field(DO4,  "0")
+	field(DO5,  "6")
+	field(LNK1, "$(Sys)$(Dev)Cmd:Bar-Buf.SCAN PP")
+	field(LNK2, "$(Sys)$(Dev)DB:BarProc-Sts_ PP")
+	field(LNK3, "$(Sys)$(Dev)Mode:Scan-Sts PP")
+	field(LNK4, "$(Sys)$(Dev)Cnt:BarCyc-Calc PP")
+	field(LNK5, "$(Sys)$(Dev)DB:ParProc-FOut_.SCAN PP")
+}
+
+## Send 'data' command to poll measurements
+record(waveform,"$(Sys)$(Dev)Cmd:Bar-Buf")
+{
+	field(DESC, "Polling data")
+	field(DTYP, "stream")
+	field(INP,  "@hiden_rga.proto barData $(PORT)")
+	field(FTVL, "CHAR")
+	field(NELM, "5000")
+	field(FLNK, "$(Sys)$(Dev)DB:BarRaw-ASub_")
+}
+
+# Hold returned measurement, parse them and put value into different arrays
+record(aSub, "$(Sys)$(Dev)DB:BarRaw-ASub_")
+{
+	field(DESC, "Bar Measurement")
+	field(INAM, "asubScanMeasInit")
+	field(SNAM, "asubScanMeasRawProc")
+	field(INPA, "$(Sys)$(Dev)Cmd:Bar-Buf")
+	field(FTA,  "CHAR")
+	field(NOA,  "5000")	
+	field(INPB, "$(Sys)$(Dev)Val:BarStop-Wf NPP")
+        field(FTB,  "STRING")
+        field(NOB,  "50")
+	field(INPC, "$(Sys)$(Dev)Mass:BarStart-SP PP")
+        field(FTC,  "DOUBLE")
+        field(NOC,  "1")
+	field(INPD, "$(Sys)$(Dev)DB:BarDataAll-Sts_")
+	field(FTD,  "SHORT")
+	field(NOD,  "1")
+	field(INPE, "$(Sys)$(Dev)Cmd:BarDataAll-Buf_")
+	field(FTE,  "CHAR")
+	field(NOE,  "1000")
+
+        field(OUTA, "$(Sys)$(Dev)DB:BarRst-Sts_ PP")
+        field(FTVA, "SHORT")
+        field(NOVA, "1")
+	field(OUTB, "$(Sys)$(Dev)DB:BarStop-Sts_ PP")
+	field(FTVB, "SHORT")
+	field(NOVB, "1")
+	field(OUTC, "$(Sys)$(Dev)DB:BarProc-Sts_ PP")
+	field(FTVC, "SHORT")
+	field(NOVC, "1")
+	field(OUTD, "$(Sys)$(Dev)Time:Bar-I PP")
+        field(FTVD, "LONG")
+        field(NOVD, "1")
+	field(OUTE, "$(Sys)$(Dev)Mass:BarRaw-Wf")
+	field(FTVE, "DOUBLE")	
+	field(NOVE, "100")
+	field(OUTF, "$(Sys)$(Dev)P:BarRaw-Wf")
+	field(FTVF, "DOUBLE")	
+	field(NOVF, "100")
+	field(OUTG, "$(Sys)$(Dev)Mass:BarRaw-Wf.NELM PP")
+	field(FTVG, "LONG")
+	field(NOVG, "1")
+	field(OUTH, "$(Sys)$(Dev)P:BarRaw-Wf.NELM PP")
+	field(FTVH, "LONG")
+	field(NOVH, "1")
+	field(OUTI, "$(Sys)$(Dev)DB:BarDataAll-Sts_ PP")
+	field(FTVI, "SHORT")
+	field(NOVI, "1")
+	field(OUTJ, "$(Sys)$(Dev)DB:BarCyc-Sts_ PP")
+	field(FTVJ, "SHORT")
+	field(NOVJ, "1")
+	field(FLNK, "$(Sys)$(Dev)DB:BarDisp-ASub_")
+}
+
+# Reset compress record
+record(bi, "$(Sys)$(Dev)DB:BarRst-Sts_")
+{
+        field(DESC, "Bar Reset")
+        field(SDIS, "$(Sys)$(Dev)DB:BarRaw-ASub_.VALA")
+        field(DISV, "0")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+	field(FLNK, "$(Sys)$(Dev)DB:BarRst-Calc_")
+}
+
+record(calcout, "$(Sys)$(Dev)DB:BarRst-Calc_")
+{
+	field(DESC, "Reset Compress")
+	field(INPA, "$(Sys)$(Dev)DB:BarRst-Sts_")
+	field(INPB, "0")
+	field(SDIS, "$(Sys)$(Dev)DB:BarRst-Sts_")
+	field(DISV, "0")
+	field(CALC, "B")
+	field(OUT,  "$(Sys)$(Dev)DB:BarRst-DFOut_ PP")
+	field(FLNK, "$(Sys)$(Dev)Cnt:BarCyc-Calc")
+}
+
+record (dfanout, "$(Sys)$(Dev)DB:BarRst-DFOut_")
+{
+	field(DESC, "Bar Reset Fanout")
+	field(OUTA, "$(Sys)$(Dev)Mass:Bar-Buf.RES")
+	field(OUTB, "$(Sys)$(Dev)P:Bar-Buf.RES")
+}
+
+# Stop polling 'data' command when scan finished
+record(bi, "$(Sys)$(Dev)DB:BarStop-Sts_")
+{
+	field(DESC, "Bar Stop Sts")
+	field(SDIS, "$(Sys)$(Dev)DB:BarRaw-ASub_.VALB")
+	field(DISV, "0")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(FLNK, "$(Sys)$(Dev)Cmd:BarStop-Cmd")
+}
+
+# No data processing if there's no reply
+record(bi, "$(Sys)$(Dev)DB:BarProc-Sts_")
+{
+	field(DESC, "Bar Data Sts")
+	field(ZNAM, "Process")
+	field(ONAM, "No Process")
+}
+
+# Hold the measurement time
+record(longin, "$(Sys)$(Dev)Time:Bar-I")
+{
+        field(DESC, "Meas Time")
+        field(INP,  "$(Sys)$(Dev)DB:BarRaw-ASub_.VALD")
+        field(EGU,  "ms")
+}
+
+# Hold returned mass in use for each data polling
+record(subArray, "$(Sys)$(Dev)Mass:BarRaw-Wf")
+{
+	field(DESC, "Raw Bar Mass Wf")
+	field(DTYP, "Soft Channel")
+	field(MALM, "100")
+	field(SDIS, "$(Sys)$(Dev)DB:BarProc-Sts_")
+	field(DISV, "1")
+	field(FTVL, "DOUBLE")
+	field(INDX, "0")
+	field(PREC, "2")
+	field(FLNK, "$(Sys)$(Dev)Mass:Bar-Buf")
+}
+
+# Hold returned mass measurement for each data polling
+record(subArray, "$(Sys)$(Dev)P:BarRaw-Wf")
+{
+	field(DESC, "Raw Bar Val Wf")
+	field(DTYP, "Soft Channel")
+	field(MALM, "100")
+	field(SDIS, "$(Sys)$(Dev)DB:BarProc-Sts_")
+	field(DISV, "1")
+	field(FTVL, "DOUBLE")
+	field(INDX, "0")
+	field(PREC, "6")
+	field(FLNK, "$(Sys)$(Dev)P:Bar-Buf")
+}
+
+# Hold mass/pressure measurement for each cycle
+record(compress, "$(Sys)$(Dev)Mass:Bar-Buf")
+{
+        field(DESC, "Bar Mass Buf")
+	field(ALG,  "Circular Buffer")
+        field(NSAM, "100")
+	field(INP,  "$(Sys)$(Dev)Mass:BarRaw-Wf")
+}
+
+record(compress, "$(Sys)$(Dev)P:Bar-Buf")
+{
+        field(DESC, "Bar Val Buf")
+        field(ALG,  "Circular Buffer")
+        field(NSAM, "100")
+        field(INP,  "$(Sys)$(Dev)P:BarRaw-Wf")
+}
+
+# End of one cycle
+record(bi, "$(Sys)$(Dev)DB:BarCyc-Sts_")
+{
+	field(DESC, "Bar One Cycle Sts")
+	field(ZNAM, "In Cycle")
+	field(ONAM, "Cmplt Cycle")
+	field(FLNK, "$(Sys)$(Dev)DB:BarWf-ASub_")
+}
+
+# Calculate the scan cycle
+record(calc, "$(Sys)$(Dev)Cnt:BarCyc-Calc")
+{
+	field(DESC, "Calc Bar Cycle")
+	field(INPA, "$(Sys)$(Dev)Cnt:BarCyc-Calc")
+	field(INPB, "$(Sys)$(Dev)DB:BarStop-Sts_")
+ 	field(SDIS, "$(Sys)$(Dev)DB:BarRst-Sts_")
+	field(DISV, "0")
+	field(CALC, "B=1?0:A+1")
+}
+
+# Process measurement values, parse them and put value into different arrays
+record(aSub, "$(Sys)$(Dev)DB:BarWf-ASub_")
+{
+        field(DESC, "Bar Measurement")
+        field(INAM, "asubScanMeasInit")
+        field(SNAM, "asubScanMeasWfProc")
+        field(INPA, "$(Sys)$(Dev)Mass:Bar-Buf")
+        field(FTA,  "DOUBLE")
+        field(NOA,  "100")
+        field(INPB, "$(Sys)$(Dev)P:Bar-Buf")
+        field(FTB,  "DOUBLE")
+        field(NOB,  "100")
+	field(SDIS, "$(Sys)$(Dev)DB:BarCyc-Sts_")
+	field(DISV, "0")
+        field(OUTA, "$(Sys)$(Dev)Mass:Bar-Wf PP")
+        field(FTVA, "DOUBLE")
+        field(NOVA, "100")
+        field(OUTB, "$(Sys)$(Dev)P:Bar-Wf PP")
+        field(FTVB, "DOUBLE")
+        field(NOVB, "100")
+	field(FLNK, "$(Sys)$(Dev)DB:ParProc-FOut_")
+}
+
+# Array for measurement of one cycle
+record(waveform, "$(Sys)$(Dev)Mass:Bar-Wf")
+{
+        field(DESC, "Bar Mass Array")
+        field(FTVL, "DOUBLE")
+        field(NELM, "100")
+}
+
+record(waveform, "$(Sys)$(Dev)P:Bar-Wf")
+{
+        field(DESC, "Bar Val Array")
+        field(FTVL, "DOUBLE")
+        field(NELM, "100")
+}
+
+# Process to get measurement for display
+record(aSub, "$(Sys)$(Dev)DB:BarDisp-ASub_")
+{
+        field(DESC, "Bar Display")
+        field(INAM, "asubScanDispInit")
+        field(SNAM, "asubScanDispProc")
+        field(INPA, "$(Sys)$(Dev)Mass:Bar-Wf NPP NMS")
+        field(FTA,  "DOUBLE")
+        field(NOA,  "100")
+        field(INPB, "$(Sys)$(Dev)Mass:Bar-Buf NPP NMS")
+        field(FTB,  "DOUBLE")
+        field(NOB,  "100")
+        field(INPC, "$(Sys)$(Dev)P:Bar-Wf NPP NMS")
+        field(FTC,  "DOUBLE")
+        field(NOC,  "100")
+        field(INPD, "$(Sys)$(Dev)P:Bar-Buf NPP NMS")
+        field(FTD,  "DOUBLE")
+        field(NOD,  "100")
+        field(INPE, "$(Sys)$(Dev)Cnt:Bar-Calc PP")
+        field(FTE,  "SHORT")
+        field(NOE,  "1")
+	field(INPF, "$(Sys)$(Dev)Mass:Bar-Wf.STAT")
+        field(FTF,  "SHORT")
+        field(NOF,  "1")
+        field(OUTA, "$(Sys)$(Dev)Mass:BarDisp-Wf PP")
+        field(FTVA, "DOUBLE")
+        field(NOVA, "100")
+        field(OUTB, "$(Sys)$(Dev)P:BarDisp-Wf PP")
+        field(FTVB, "DOUBLE")
+        field(NOVB, "100")
+        field(OUTC, "$(Sys)$(Dev)DB:BarDisp-Wf PP")
+        field(FTVC, "DOUBLE")
+        field(NOVC, "100")
+}
+
+record(waveform, "$(Sys)$(Dev)Mass:BarDisp-Wf")
+{
+        field(DESC, "Bar Mass Disp")
+        field(FTVL, "DOUBLE")
+        field(NELM, "100")
+}
+
+record(waveform, "$(Sys)$(Dev)P:BarDisp-Wf")
+{
+        field(DESC, "Bar P Disp")
+        field(FTVL, "DOUBLE")
+        field(NELM, "100")
+}
+
+record(waveform, "$(Sys)$(Dev)DB:BarDisp-Wf")
+{
+        field(DESC, "Bar X Disp")
+        field(FTVL, "DOUBLE")
+        field(NELM, "5000")
+        field(INP,  "$(Sys)$(Dev)DB:BarDisp-ASub_.VALC")
+}
+
+## Stop the recall of data
+record(bo, "$(Sys)$(Dev)Cmd:BarStop-Cmd")
+{
+	field(DESC, "Stop Task")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto barStop($(Sys),$(Dev)) $(PORT)")
+	field(SDIS, "$(Sys)$(Dev)Cmd:Bar-Buf.SCAN")
+	field(DISV, "0")
+	field(FLNK, "$(Sys)$(Dev)DB:BarStop-Seq_")
+        field(ASG,  "VAWRITE")
+}
+
+record(waveform, "$(Sys)$(Dev)Val:BarStop-Wf")
+{
+        field(DESC, "Bar Stop Meas")
+        field(FTVL, "STRING")
+        field(NELM, "50")
+	field(SDIS, "$(Sys)$(Dev)Cmd:Bar-Buf.SCAN")
+        field(DISV, "0")
+}
+
+# Pause scan
+record(bo, "$(Sys)$(Dev)Cmd:BarPause-Cmd")
+{
+	field(DESC, "Pause Scan")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto scanPause $(PORT)")	
+	field(FLNK, "$(Sys)$(Dev)DB:BarPause-Cmd_")
+        field(ASG,  "VAWRITE")
+}
+
+#  Disable 'data' command 
+record(bo, "$(Sys)$(Dev)DB:BarPause-Cmd_")
+{
+        field(DESC, "Pause Scan")
+        field(OUT,  "$(Sys)$(Dev)Cmd:Bar-Buf.SCAN")
+	field(VAL,  "0")
+}
+
+# Continue scan
+record(bo, "$(Sys)$(Dev)Cmd:BarCont-Cmd")
+{
+	field(DESC, "Continue Scan")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto scanContinue $(PORT)")	
+	field(FLNK, "$(Sys)$(Dev)DB:BarCont-Cmd_")
+        field(ASG,  "VAWRITE")
+}
+
+#  Enable 'data' command 
+record(bo, "$(Sys)$(Dev)DB:BarCont-Cmd_")
+{
+        field(DESC, "Continue Scan")
+        field(OUT,  "$(Sys)$(Dev)Cmd:Bar-Buf.SCAN")
+        field(VAL,  "7")
+}
+
+# Stop at the end of current cycle
+record(bo, "$(Sys)$(Dev)Cmd:BarStopEnd-Cmd")
+{
+	field(DESC, "Stop Scan at end")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto scanStop $(PORT)")
+        field(ASG,  "VAWRITE")
+}
+
+#  Local environment
+record(longout, "$(Sys)$(Dev)E:BarFocus-SP")
+{
+	field(DESC, "Bar Focus")
+	field(LOPR, "-200")
+	field(HOPR, "0")
+	field(EGU,  "V")
+	field(VAL,  "-90")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)E:BarDeltaM-SP")
+{
+	field(DESC, "Bar Delta-M")
+	field(LOPR, "-100")
+	field(HOPR, "100")
+	field(EGU,  "%")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)Res:Bar-SP")
+{
+	field(DESC, "Bar Resolution")
+	field(LOPR, "-100")
+	field(HOPR, "100")
+	field(EGU,  "%")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)E:BarCage-SP")
+{
+	field(DESC, "Bar Cage")
+	field(PREC, "1")
+	field(LOPR, "-10")
+	field(HOPR, "10")
+	field(EGU,  "V")
+	field(VAL,  "3")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Enrgy:BarE-SP")
+{
+	field(DESC, "Bar E-Energy")
+	field(LOPR, "4")
+	field(HOPR, "150")
+	field(PREC, "1")
+	field(EGU,  "V")
+	field(VAL,  "70")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Emis:Bar-SP")
+{
+	field(DESC, "Bar Emission")
+	field(PREC, "3")
+	field(LOPR, "20")
+	field(HOPR, "5000")
+	field(EGU,  "uA")
+	field(VAL,  "200")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Mass:Bar-SP")
+{
+	field(DESC, "Bar Mass")
+	field(PREC, "2")
+	field(LOPR, "0.4")
+	field(HOPR, "100")
+	field(EGU,  "amu")
+	field(VAL,  "5.5")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)Time:BarModeChngDly-SP")
+{
+	field(DESC, "Bar Mode-C-Dly")
+	field(LOPR, "0")
+	field(HOPR, "10000000")
+	field(EGU,  "ms")
+	field(VAL,  "1000")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:BarEnv-Cmd")
+{
+	field(DESC, "Environment Cmd")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto localSet($(Sys),$(Dev),Bar) $(PORT)")	
+	field(SDIS, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+        field(DISV, "1")
+        field(ASG,  "VAWRITE")
+}

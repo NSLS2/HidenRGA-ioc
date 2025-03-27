@@ -1,0 +1,524 @@
+## Database for Hiden RC Interface RGA
+
+## Set up parameters for leak detect mode
+# Set particular mass 1
+record(longout, "$(Sys)$(Dev)Mass:LD_Start-SP")
+{
+	field(DESC, "Set Start Mass")
+	field(LOPR, "1")
+	field(HOPR, "100")
+	field(VAL,  "2")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set detector type
+record(mbbo, "$(Sys)$(Dev)Type:LD_Detr-Sel")
+{
+	field(DESC, "Set Detector Type")
+	field(ZRST, "Faraday")
+	field(ONST, "SEM")
+	field(VAL,  "1")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+#  Check autoranging
+record(bo, "$(Sys)$(Dev)P:LD_AutoRng-Sel")
+{
+	field(DESC, "Set Autoranging")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(VAL,  "1")
+	field(FLNK, "$(Sys)$(Dev)DB:LD_Rng-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Download data to controller
+record(fanout, "$(Sys)$(Dev)DB:LD_Rng-FOut_")
+{
+	field(DESC, "LD Range Fanout")
+	field(SDIS, "$(Sys)$(Dev)P:LD_AutoRng-Sel")
+	field(DISV, "0")
+	field(LNK1, "$(Sys)$(Dev)DB:LD_F_Rng-Seq_")
+	field(LNK2, "$(Sys)$(Dev)DB:LD_SEM_Rng-Seq_")
+}
+
+# Set the pressure range limit for autoranging
+record(seq, "$(Sys)$(Dev)DB:LD_F_Rng-Seq_")
+{
+	field(DESC, "Faraday Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:LD_Detr-Sel")
+	field(DISV, "1")
+	field(DOL1, "$(Sys)$(Dev)P:F_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:LD_Lo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:LD_Hi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:LD_Curt-SP PP")
+}
+
+record(seq, "$(Sys)$(Dev)DB:LD_SEM_Rng-Seq_")
+{
+	field(DESC, "SEM Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:LD_Detr-Sel")
+	field(DISV, "0")
+	field(DOL1, "$(Sys)$(Dev)P:SEM_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:LD_Lo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:LD_Hi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:LD_Curt-SP PP")
+}
+# Set the low pressure range limit for autoranging
+record(longout, "$(Sys)$(Dev)P:LD_Lo-SP")
+{
+	field(DESC, "Set Low Pr")
+	field(LOPR, "-13")
+	field(HOPR, "-10")
+	field(VAL,  "-13")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the high pressure limit for autoranging
+record(longout, "$(Sys)$(Dev)P:LD_Hi-SP")
+{
+	field(DESC, "Set High Pr")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the initial range
+record(longout, "$(Sys)$(Dev)P:LD_Curt-SP")
+{
+	field(DESC, "Set Current")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set dwell time
+record(longout, "$(Sys)$(Dev)Time:LD_Dwell-SP")
+{
+	field(DESC, "Set Dwell Time")
+	field(LOPR, "1")
+	field(HOPR, "6000")
+	field(VAL,  "100")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set settle time
+record(longout, "$(Sys)$(Dev)Time:LD_Setl-SP")
+{
+	field(DESC, "Set Settle Time")
+	field(LOPR, "1")
+	field(HOPR, "6000")
+	field(VAL,  "100")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(bo, "$(Sys)$(Dev)Time:LD_Dwell-Cmd")
+{
+	field(DESC, "Dwell Time Opt")
+	field(ZNAM, "Normal")
+	field(ONAM, "Low Noise")
+	field(VAL,  "0")
+	field(FLNK, "$(Sys)$(Dev)DB:LD_DwellTime-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Download data to controller
+record(fanout, "$(Sys)$(Dev)DB:LD_DwellTime-FOut_")
+{
+	field(DESC, "DwellK Fanout")
+	field(LNK1, "$(Sys)$(Dev)DB:LD_Dwell1Time-Seq_")
+	field(LNK2, "$(Sys)$(Dev)DB:LD_Dwell2Time-Seq_")
+}
+
+#  Set autorange 
+record(seq, "$(Sys)$(Dev)DB:LD_Dwell1Time-Seq_")
+{
+	field(DESC, "Normal Dwell")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Time:LD_Dwell-Cmd")
+	field(DISV, "1")
+	field(DO1,  "100")
+	field(DO2,  "100")
+	field(LNK1, "$(Sys)$(Dev)Time:LD_Dwell-SP PP")
+	field(LNK2, "$(Sys)$(Dev)Time:LD_Setl-SP PP")
+}
+
+record(seq, "$(Sys)$(Dev)DB:LD_Dwell2Time-Seq_")
+{
+	field(DESC, "Low Noise Dwell")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Time:LD_Dwell-Cmd")
+	field(DISV, "0")
+	field(DO1,  "400")
+	field(DO2,  "100")
+	field(LNK1, "$(Sys)$(Dev)Time:LD_Dwell-SP PP")
+	field(LNK2, "$(Sys)$(Dev)Time:LD_Setl-SP PP")
+}
+
+# Parameters set for LD mode download to RGA
+record(bo, "$(Sys)$(Dev)Cmd:LD_Set-Cmd")
+{
+	field(DESC, "Set LD Para")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto ldSet($(Sys),$(Dev)) $(PORT)")
+	field(SDIS, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+        field(DISV, "1")
+        field(ASG,  "VAWRITE")
+}
+
+# Set the cycle number
+record(longout, "$(Sys)$(Dev)Cnt:LD_Cyc-SP")
+{
+	field(DESC, "Set Cycles")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(bo, "$(Sys)$(Dev)Cnt:LD_Cont-Cmd")
+{
+	field(DESC, "Continuous Cycles")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(FLNK, "$(Sys)$(Dev)Cnt:LD_Cont-SP")
+        field(ASG,  "VAWRITE")
+}
+
+record(longout, "$(Sys)$(Dev)Cnt:LD_Cont-SP")
+{
+	field(DESC, "Continuous Cycles")
+	field(SDIS, "$(Sys)$(Dev)Cnt:LD_Cont-Cmd")
+	field(DISV, "0")
+	field(VAL,  "0")
+	field(OUT,  "$(Sys)$(Dev)Cnt:LD_Cyc-SP")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Parameters set for LD mode download to RGA
+record(bo, "$(Sys)$(Dev)Cmd:LD_Set-Cmd")
+{
+	field(DESC, "Set LD Para")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto ldSet($(Sys),$(Dev)) $(PORT)")
+        field(ASG,  "VAWRITE")
+}
+
+# Initialize and set up mid scan
+record(bo, "$(Sys)$(Dev)Cmd:LD_Start-Cmd")
+{
+	field(DESC, "Set LD Scan")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto ldStart($(Sys),$(Dev)) $(PORT)")
+	field(SDIS, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+        field(DISV, "1")
+	field(FLNK, "$(Sys)$(Dev)DB:LD-FOut_")
+        field(ASG,  "VAWRITE")
+}
+
+record(fanout, "$(Sys)$(Dev)DB:LD-FOut_")
+{
+	field(DESC, "LD Scan Fanout")
+	field(LNK1, "$(Sys)$(Dev)DB:LD_Start-Seq_")
+	field(LNK2, "$(Sys)$(Dev)ID:LD_Task-I")
+}
+
+# Get task id
+record(longin, "$(Sys)$(Dev)ID:LD_Task-I")
+{
+	field(DESC, "LD Task ID")
+	field(FLNK, "$(Sys)$(Dev)ID:LD_Job-I")
+}
+
+record(longin, "$(Sys)$(Dev)ID:LD_Job-I")
+{
+	field(DESC, "LD Job ID")
+}
+
+# Start to poll 'data' command
+record(seq, "$(Sys)$(Dev)DB:LD_Start-Seq_")
+{
+	field(DESC, "Start LD Scan")
+	field(DO1,  "7")
+	field(DO2,  "4")
+	field(LNK1, "$(Sys)$(Dev)Cmd:LD-Asyn.SCAN PP")
+	field(LNK2, "$(Sys)$(Dev)Mode:Scan-Sts PP")
+}
+
+#  Disable 'data' command
+record(seq, "$(Sys)$(Dev)DB:LD_Stop-Seq_")
+{
+	field(DESC, "Stop LD Scan")
+	field(SELM, "All")
+	field(DO1,  "0")
+	field(DO2,  "0")
+	field(LNK1, "$(Sys)$(Dev)Cmd:LD-Asyn.SCAN PP")
+	field(LNK2, "$(Sys)$(Dev)Mode:Scan-Sts PP")
+}
+
+## Send 'data' command to poll measurements
+record(asyn,"$(Sys)$(Dev)Cmd:LD-Asyn")
+{
+	field(DESC, "Polling data")
+	field(DTYP, "asynRecordDevice")
+	field(PORT, "$(PORT)")
+	field(ADDR, "0")
+	field(OMAX, "0")
+	field(IMAX, "0")
+	field(AOUT, "data\r")
+	field(IEOS, "\r\n")
+	field(IFMT, "Binary")
+	field(IMAX, "5000")
+	field(FLNK, "$(Sys)$(Dev)DB:LD-ASub_")
+	field(TMOT, "0.1")
+}
+
+# Hold returned measurement, parse them and put value into different arrays
+record(aSub, "$(Sys)$(Dev)DB:LD-ASub_")
+{
+	field(DESC, "LD Measurement")
+	field(INAM, "asubMIDMeasInit")
+	field(SNAM, "asubMIDMeasRawProc")
+	field(INPA, "$(Sys)$(Dev)Cmd:LD-Asyn.BINP")
+	field(FTA,  "CHAR")
+	field(NOA,  "5000")	
+	field(INPB, "$(Sys)$(Dev)Mass:LD_Start-SP")
+	field(FTB,  "SHORT")
+	field(NOB,  "1")
+	field(OUTA, "$(Sys)$(Dev)DB:LD_Stop-Sts_ PP")
+	field(FTVA, "LONG")
+	field(NOVA, "1")
+	field(OUTB, "$(Sys)$(Dev)DB:LD_Proc-Sts_ PP")
+	field(FTVB, "LONG")
+	field(NOVB, "1")	
+	field(OUTG, "$(Sys)$(Dev)DB:LD_P-I_ PP")
+	field(FTVG, "DOUBLE")	
+	field(NOVG, "1")
+	field(OUTL, "$(Sys)$(Dev)Time:LD-I PP")
+        field(FTVL, "LONG")
+        field(NOVL, "1")
+}
+
+# Stop polling 'data' command when scan finished
+record(bi, "$(Sys)$(Dev)DB:LD_Stop-Sts_")
+{
+	field(DESC, "LD Stop Sts")
+	field(SDIS, "$(Sys)$(Dev)DB:LD-ASub_.VALA")
+	field(DISV, "0")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(FLNK, "$(Sys)$(Dev)Cmd:LD_Stop-Cmd")
+}
+
+# Get processed measurement
+record(bi, "$(Sys)$(Dev)DB:LD_Proc-Sts_")
+{
+        field(DESC, "LD Proc Sts")
+        field(SDIS, "$(Sys)$(Dev)DB:LD-ASub_.VALB")
+        field(DISV, "0")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+}
+
+# Get measurement value for each mass
+record(ai, "$(Sys)$(Dev)DB:LD_P-I_")
+{
+	field(DESC, "Mass Val")
+	field(PREC, "2")
+	field(SDIS, "$(Sys)$(Dev)DB:LD-ASub_.VALB")
+        field(DISV, "0")
+	field(FLNK, "$(Sys)$(Dev)P:LD-I")
+}
+
+record(ai, "$(Sys)$(Dev)P:LD-I")
+{
+        field(DESC,  "Mass Meas")
+        field(INP,  "$(Sys)$(Dev)DB:LD_P-I_")
+}
+
+record(longin, "$(Sys)$(Dev)Time:LD-I")
+{
+        field(DESC, "LD Measure Time")
+        field(SDIS, "$(Sys)$(Dev)DB:LD-ASub_.VALA")
+        field(DISV, "0")
+	field(INP,  "$(Sys)$(Dev)DB:LD-ASub_.VALK")
+}
+
+## Stop the recall of data
+record(bo, "$(Sys)$(Dev)Cmd:LD_Stop-Cmd")
+{
+	field(DESC, "Stop Task")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto ldStop($(Sys),$(Dev)) $(PORT)")
+	field(SDIS, "$(Sys)$(Dev)Cmd:LD-Asyn.SCAN")
+	field(DISV, "0")
+	field(FLNK, "$(Sys)$(Dev)DB:LD_Stop-Seq_")
+        field(ASG,  "VAWRITE")
+}
+
+# Pause scan
+record(bo, "$(Sys)$(Dev)Cmd:LD_Pause-Cmd")
+{
+	field(DESC, "Pause Scan")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto scanPause $(PORT)")	
+	field(FLNK, "$(Sys)$(Dev)DB:LD_Pause-Cmd_")
+        field(ASG,  "VAWRITE")
+}
+
+#  Disable 'data' command 
+record(bo, "$(Sys)$(Dev)DB:LD_Pause-Cmd_")
+{
+	field(DESC, "Pause Scan")
+	field(VAL,  "0")
+	field(OUT, "$(Sys)$(Dev)Cmd:LD-Asyn.SCAN")
+}
+
+# Continue scan
+record(bo, "$(Sys)$(Dev)Cmd:LD_Cont-Cmd")
+{
+	field(DESC, "Continue Scan")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto scanContinue $(PORT)")	
+	field(FLNK, "$(Sys)$(Dev)DB:LD_Cont-Cmd_")
+        field(ASG,  "VAWRITE")
+}
+
+#  Enable 'data' command 
+record(bo, "$(Sys)$(Dev)DB:LD_Cont-Cmd_")
+{
+	field(DESC, "Cont. Scan")
+	field(VAL,  "6")
+	field(OUT, "$(Sys)$(Dev)Cmd:LD-Asyn.SCAN")
+}
+
+# Stop at the end of current cycle
+record(bo, "$(Sys)$(Dev)Cmd:LD_StopEnd-Cmd")
+{
+	field(DESC, "Stop Scan at end")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto scanStop $(PORT)")	
+        field(ASG,  "VAWRITE")
+}
+
+#  Local environment
+record(longout, "$(Sys)$(Dev)E:LD_Focus-SP")
+{
+	field(DESC, "LD Focus")
+	field(LOPR, "-200")
+	field(HOPR, "0")
+	field(EGU,  "V")
+	field(VAL,  "-90")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)E:LD_DeltaM-SP")
+{
+	field(DESC, "LD Delta-M")
+	field(LOPR, "-100")
+	field(HOPR, "100")
+	field(EGU,  "%")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)Res:LD-SP")
+{
+	field(DESC, "LD Resolution")
+	field(LOPR, "-100")
+	field(HOPR, "100")
+	field(EGU,  "%")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)E:LD_Cage-SP")
+{
+	field(DESC, "LD Cage")
+	field(PREC, "1")
+	field(LOPR, "-10")
+	field(HOPR, "10")
+	field(EGU,  "V")
+	field(VAL,  "3")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Enrgy:LD_E-SP")
+{
+	field(DESC, "LD E-Energy")
+	field(LOPR, "4")
+	field(HOPR, "150")
+	field(PREC, "1")
+	field(EGU,  "V")
+	field(VAL,  "70")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Emis:LD-SP")
+{
+	field(DESC, "LD Emission")
+	field(PREC, "3")
+	field(LOPR, "20")
+	field(HOPR, "5000")
+	field(EGU,  "uA")
+	field(VAL,  "200")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Mass:LD-SP")
+{
+	field(DESC, "LD Mass")
+	field(PREC, "2")
+	field(LOPR, "0.4")
+	field(HOPR, "100")
+	field(EGU,  "amu")
+	field(VAL,  "5.5")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)Time:LD_ModeChngDly-SP")
+{
+	field(DESC, "LD Mode-C-Dly")
+	field(LOPR, "0")
+	field(HOPR, "10000000")
+	field(EGU,  "ms")
+	field(VAL,  "1000")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:LD_Env-Cmd")
+{
+	field(DESC, "Environment Cmd")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto localMIDSet($(Sys),$(Dev)) $(PORT)")	
+	field(SDIS, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+	field(DISV, "1")
+        field(ASG,  "VAWRITE")
+}
+
+

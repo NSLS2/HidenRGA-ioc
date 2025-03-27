@@ -1,0 +1,69 @@
+program sncDegas
+
+int degas_start;
+assign degas_start to "{Sys}{Dev}DB:DegasStart-Cmd";
+monitor degas_start;
+
+int degas_stop;
+assign degas_stop to "{Sys}{Dev}DB:DegasStop-Cmd";
+monitor degas_stop;
+
+int degas_delay_min;
+assign degas_delay_min to "{Sys}{Dev}DB:DegasTime-SP";
+monitor degas_delay_min;
+
+int degas_delay_sec;
+
+option +r;
+
+ss degas {
+	state degasInit 
+	{
+		when (delay(1.0)) 
+		{
+			degas_start = 0;
+			degas_stop = 0;
+			pvPut(degas_start);
+			pvPut(degas_stop);
+/*			printf("degas init\n");	*/
+		} state degasStart
+	}
+
+	state degasStart 
+	{
+		when (degas_start ) 
+		{
+			degas_delay_sec = degas_delay_min*60;
+/*			printf("degas time is %d\n", degas_delay_sec); */
+		} state degasDelay
+	}
+
+	state degasDelay
+	{
+		when (delay(degas_delay_sec))
+		{
+/*			 printf("degas time is %d\n", degas_delay_sec);	*/
+		} state degasStop
+		when (degas_stop)
+		{
+			degas_delay_min = 0;
+                        degas_delay_sec = 0;
+                        pvPut(degas_delay_min);
+		} state degasInit
+	}
+
+	state degasStop
+	{
+		when ()
+		{
+			degas_start = 0;
+			degas_stop = 1;
+			pvPut(degas_start);
+			pvPut(degas_stop);
+/*			printf("degasStop Stop\n");	*/
+		} state degasInit
+	}
+}
+	
+
+

@@ -1,0 +1,80 @@
+## Database for Hiden RC Interface RGA
+
+## Degas setting
+## Get multiplier ID
+record(longin, "$(Sys)$(Dev)ID:Multp-I")
+{
+	field(DESC, "Multiplier ID")
+	field(DTYP, "stream")
+	field(INP,  "@hiden_rga.proto getMultpID() $(PORT)")
+	field(PINI, 1)
+}
+
+#  Set degas setting
+record(bo, "$(Sys)$(Dev)Cmd:DegasFil1-Cmd")
+{
+	field(DESC, "F1 Cmd")
+	field(ZNAM, "0")
+	field(ONAM, "1")
+	field(VAL,  "0")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:DegasFil2-Cmd")
+{
+	field(DESC, "F2 Cmd")
+	field(ZNAM, "0")
+	field(ONAM, "1")
+	field(VAL,  "1")
+}
+
+record(longin, "$(Sys)$(Dev)E:Multp-RB")
+{
+	field(DESC, "Multiplier E")
+	field(EGU,  "V")
+}
+
+record(longout, "$(Sys)$(Dev)DB:DegasTime-SP")
+{
+        field(DESC, "Degas Time")
+        field(EGU,  "Minute")
+}
+
+record(bo, "$(Sys)$(Dev)DB:DegasStart-Cmd")
+{
+	field(DESC, "Degas Start")
+	field(ZNAM, "0")
+	field(ONAM, "1")
+	field(HIGH, "1")
+	field(OUT,  "$(Sys)$(Dev)Cmd:DegasStart-Cmd PP")
+	field(SDIS, "$(Sys)$(Dev)DB:Lck-Sts")
+	field(DISV, "1")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:DegasStart-Cmd")
+{
+	field(DESC, "Degas Start")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto startDegas($(Sys),$(Dev)) $(PORT)")	
+	field(SDIS, "$(Sys)$(Dev)DB:DegasStart-Cmd")
+	field(DISV, "0")
+}
+
+record(bo, "$(Sys)$(Dev)DB:DegasStop-Cmd")
+{
+	field(DESC, "Degas Stop")
+	field(ZNAM, "0")
+	field(ONAM, "1")
+	field(HIGH, "1")
+	field(OUT,  "$(Sys)$(Dev)Cmd:DegasStop-Cmd PP")
+	field(SDIS, "$(Sys)$(Dev)DB:Lck-Sts")
+	field(DISV, "1")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:DegasStop-Cmd")
+{
+	field(DESC, "Degas Stop")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto stopDegas($(Sys),$(Dev)) $(PORT)")	
+	field(SDIS, "$(Sys)$(Dev)DB:DegasStop-Cmd")
+	field(DISV, "0")
+}

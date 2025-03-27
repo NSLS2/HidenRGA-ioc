@@ -1,0 +1,790 @@
+## Database for Hiden RC Interface RGA
+
+## Set up parameters for profile mode
+# Set the start mass
+record(ao, "$(Sys)$(Dev)Mass:PrflStart-SP")
+{
+	field(DESC, "Set Start Mass")
+	field(PREC, "2")
+	field(LOPR, "1.0")
+	field(HOPR, "100.0")
+	field(VAL,  "1")
+	field(FLNK, "$(Sys)$(Dev)Cnt:Prfl-Calc")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the stop mass
+record(ao, "$(Sys)$(Dev)Mass:PrflStop-SP")
+{
+	field(DESC, "Set Stop Mass")
+	field(PREC, "2")
+	field(LOPR, "1.0")
+	field(HOPR, "100.0")
+	field(VAL,  "100")
+	field(FLNK, "$(Sys)$(Dev)Cnt:Prfl-Calc")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set steps
+record(ao, "$(Sys)$(Dev)Step:Prfl-SP")
+{
+	field(DESC, "Set Step")
+	field(PREC, "2")
+	field(VAL,  "0.13")
+	field(LOPR, "0.02")
+	field(HOPR, "1")
+	field(FLNK, "$(Sys)$(Dev)Cnt:Prfl-Calc")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(calc, "$(Sys)$(Dev)Cnt:Prfl-Calc")
+{
+	field(DESC, "Point Calc")
+	field(INPA, "$(Sys)$(Dev)Mass:PrflStart-SP")
+	field(INPB, "$(Sys)$(Dev)Mass:PrflStop-SP")
+	field(INPC, "$(Sys)$(Dev)Step:Prfl-SP")
+	field(CALC, "FLOOR((B-A)/C+1)")
+	field(VAL,  "762")
+}
+
+# Set detector type
+record(mbbo, "$(Sys)$(Dev)Type:PrflDetr-Sel")
+{
+	field(DESC, "Set Detector Type")
+	field(ZRST, "Faraday")
+	field(ONST, "SEM")
+	field(VAL,  "1")
+	field(FLNK, "$(Sys)$(Dev)DB:PrflRng-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+#  Check autoranging
+record(bo, "$(Sys)$(Dev)P:PrflAutoRng-Sel")
+{
+	field(DESC, "Set Autoranging")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(VAL,  "1")
+	field(FLNK, "$(Sys)$(Dev)DB:PrflRng-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Download data to controller
+record(fanout, "$(Sys)$(Dev)DB:PrflRng-FOut_")
+{
+	field(DESC, "Range Fanout")
+	field(SDIS, "$(Sys)$(Dev)P:PrflAutoRng-Sel")
+	field(DISV, "0")
+	field(LNK1, "$(Sys)$(Dev)DB:PrflF_Rng-Seq_")
+	field(LNK2, "$(Sys)$(Dev)DB:PrflSEM_Rng-Seq_")
+}
+
+#  Set autorange 
+record(seq, "$(Sys)$(Dev)DB:PrflF_Rng-Seq_")
+{
+	field(DESC, "Faraday Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:PrflDetr-Sel")
+	field(DISV, "1")
+	field(DOL1, "$(Sys)$(Dev)P:F_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:PrflLo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:PrflHi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:PrflCurt-SP PP")
+}
+
+record(seq, "$(Sys)$(Dev)DB:PrflSEM_Rng-Seq_")
+{
+	field(DESC, "SEM Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:PrflDetr-Sel")
+	field(DISV, "0")
+	field(DOL1, "$(Sys)$(Dev)P:SEM_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:PrflLo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:PrflHi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:PrflCurt-SP PP")
+}
+# Set the low pressure range limit for autoranging
+record(longout, "$(Sys)$(Dev)P:PrflLo-SP")
+{
+	field(DESC, "Set Low Pr")
+	field(LOPR, "-13")
+	field(HOPR, "-10")
+	field(VAL,  "-13")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the high pressure limit for autoranging
+record(longout, "$(Sys)$(Dev)P:PrflHi-SP")
+{
+	field(DESC, "Set High Pr")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the initial range
+record(longout, "$(Sys)$(Dev)P:PrflCurt-SP")
+{
+	field(DESC, "Set Current")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set dwell time
+record(longout, "$(Sys)$(Dev)Time:PrflDwell-SP")
+{
+	field(DESC, "Set Dwell Time")
+	field(LOPR, "1")
+	field(HOPR, "6000")
+	field(VAL,  "100")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set settle time
+record(longout, "$(Sys)$(Dev)Time:PrflSetl-SP")
+{
+	field(DESC, "Set Settle Time")
+	field(LOPR, "1")
+	field(HOPR, "6000")
+	field(VAL,  "100")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(bo, "$(Sys)$(Dev)Time:PrflDwell-Cmd")
+{
+	field(DESC, "Dwell Time Opt")
+	field(ZNAM, "Normal")
+	field(ONAM, "Low Noise")
+	field(VAL,  "0")
+	field(FLNK, "$(Sys)$(Dev)DB:PrflDwellTime-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Download data to controller
+record(fanout, "$(Sys)$(Dev)DB:PrflDwellTime-FOut_")
+{
+	field(DESC, "DwellK Fanout")
+	field(LNK1, "$(Sys)$(Dev)DB:PrflDwell1Time-Seq_")
+	field(LNK2, "$(Sys)$(Dev)DB:PrflDwell2Time-Seq_")
+}
+
+#  Set autorange 
+record(seq, "$(Sys)$(Dev)DB:PrflDwell1Time-Seq_")
+{
+	field(DESC, "Normal Dwell")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Time:PrflDwell-Cmd")
+	field(DISV, "1")
+	field(DO1,  "100")
+	field(DO2,  "100")
+	field(LNK1, "$(Sys)$(Dev)Time:PrflDwell-SP PP")
+	field(LNK2, "$(Sys)$(Dev)Time:PrflSetl-SP PP")
+}
+
+record(seq, "$(Sys)$(Dev)DB:PrflDwell2Time-Seq_")
+{
+	field(DESC, "Low Noise Dwell")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Time:PrflDwell-Cmd")
+	field(DISV, "0")
+	field(DO1,  "400")
+	field(DO2,  "400")
+	field(LNK1, "$(Sys)$(Dev)Time:PrflDwell-SP PP")
+	field(LNK2, "$(Sys)$(Dev)Time:PrflSetl-SP PP")
+}
+
+# Set the cycle number
+record(longout, "$(Sys)$(Dev)Cnt:PrflCyc-SP")
+{
+	field(DESC, "Set Cycles")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(bo, "$(Sys)$(Dev)Cnt:PrflCont-Cmd")
+{
+	field(DESC, "Continuous Cycles")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(VAL,  "1")
+	field(FLNK, "$(Sys)$(Dev)Cnt:PrflCont-SP")
+        field(ASG,  "VAWRITE")
+}
+
+record(longout, "$(Sys)$(Dev)Cnt:PrflCont-SP")
+{
+	field(DESC, "Continuous Cycles")
+	field(SDIS, "$(Sys)$(Dev)Cnt:PrflCont-Cmd")
+	field(DISV, "0")
+	field(VAL,  "0")
+	field(OUT,  "$(Sys)$(Dev)Cnt:PrflCyc-SP")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Parameters set for prof mode download to RGA
+record(bo, "$(Sys)$(Dev)Cmd:PrflSet-Cmd")
+{
+	field(DESC, "Set Prfl Para")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto prflSet($(Sys),$(Dev)) $(PORT)")
+	field(SDIS, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+        field(DISV, "1")
+        field(ASG,  "VAWRITE")
+}
+
+# Initialize and Set up prof scan
+record(bo, "$(Sys)$(Dev)Cmd:PrflStart-Cmd")
+{
+	field(DESC, "Set Prfl Scan")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto prflStart($(Sys),$(Dev)) $(PORT)")
+	field(SDIS, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+        field(DISV, "1")
+	field(FLNK, "$(Sys)$(Dev)Cmd:PrflDataAll-Buf_")
+        field(ASG,  "VAWRITE")
+}
+
+## Send 'data all' command to get all stored data
+record(waveform,"$(Sys)$(Dev)Cmd:PrflDataAll-Buf_")
+{
+	field(DESC, "Data all Response")
+	field(DTYP, "stream")
+	field(INP,  "@hiden_rga.proto prflDataAll $(PORT)")
+	field(FTVL, "CHAR")
+	field(NELM, "1000")
+	field(FLNK, "$(Sys)$(Dev)DB:Prfl-FOut_")
+}
+
+record(fanout, "$(Sys)$(Dev)DB:Prfl-FOut_")
+{
+	field(DESC, "Prfl Scan Fanout")
+	field(LNK1, "$(Sys)$(Dev)DB:PrflStart-Seq_")
+	field(LNK2, "$(Sys)$(Dev)ID:PrflTask-I")
+}
+
+# Get task id
+record(longin, "$(Sys)$(Dev)ID:PrflTask-I")
+{
+	field(DESC, "Prfl Task ID")
+	field(FLNK, "$(Sys)$(Dev)ID:PrflJob-I")
+}
+
+record(longin, "$(Sys)$(Dev)ID:PrflJob-I")
+{
+	field(DESC, "Prfl Job ID")
+}
+
+#  Enable 'data' command and reset all buffers
+record(seq, "$(Sys)$(Dev)DB:PrflStart-Seq_")
+{
+	field(DESC, "Start Prfl Scan")
+	field(SELM, "All")
+	field(DO1,  "7")
+	field(DO2,  "1")
+	field(DO3,  "2")
+	field(DO4,  "1")
+	field(DO5,  "0")
+	field(LNK1, "$(Sys)$(Dev)Cmd:Prfl-Buf.SCAN PP")
+	field(LNK2, "$(Sys)$(Dev)DB:PrflProc-Sts_ PP")
+	field(LNK3, "$(Sys)$(Dev)Mode:Scan-Sts PP")
+	field(LNK4, "$(Sys)$(Dev)DB:PrflDataAll-Sts_ PP")
+	field(LNK5, "$(Sys)$(Dev)DB:ParProc-FOut_.SCAN PP")
+	field(DLY5, "10")
+}
+
+record(bi, "$(Sys)$(Dev)DB:PrflDataAll-Sts_")
+{
+	field(DESC, "Data all Cmd Proc")
+	field(ZNAM, "No Proc")
+	field(ONAM, "Need Proc")
+}
+
+#  Disable 'data' command
+record(seq, "$(Sys)$(Dev)DB:PrflStop-Seq_")
+{
+	field(DESC, "Stop Prfl Scan")
+	field(SELM, "All")
+	field(DO1,  "0")
+	field(DO2,  "1")
+	field(DO3,  "0")
+	field(DO4,  "0")
+	field(DO5,  "6")
+	field(LNK1, "$(Sys)$(Dev)Cmd:Prfl-Buf.SCAN PP")
+	field(LNK2, "$(Sys)$(Dev)DB:PrflProc-Sts_ PP")
+	field(LNK3, "$(Sys)$(Dev)Mode:Scan-Sts PP")
+	field(LNK4, "$(Sys)$(Dev)Cnt:PrflCyc-Calc PP")
+	field(LNK5, "$(Sys)$(Dev)DB:ParProc-FOut_.SCAN PP")
+}
+
+## Send 'data' command to poll measurements
+record(waveform,"$(Sys)$(Dev)Cmd:Prfl-Buf")
+{
+	field(DESC, "Polling data")
+	field(DTYP, "stream")
+	field(INP,  "@hiden_rga.proto prflData $(PORT)")
+	field(FTVL, "CHAR")
+	field(NELM, "5000")
+	field(FLNK, "$(Sys)$(Dev)DB:PrflRaw-ASub_")
+}
+
+# Hold returned measurement, parse them and put value into different arrays
+record(aSub, "$(Sys)$(Dev)DB:PrflRaw-ASub_")
+{
+	field(DESC, "Prfl Measurement")
+	field(INAM, "asubScanMeasInit")
+	field(SNAM, "asubScanMeasRawProc")
+	field(INPA, "$(Sys)$(Dev)Cmd:Prfl-Buf")
+	field(FTA,  "CHAR")
+	field(NOA,  "5000")	
+	field(INPB, "$(Sys)$(Dev)Val:PrflStop-Wf NPP")
+        field(FTB,  "STRING")
+        field(NOB,  "50")
+	field(INPC, "$(Sys)$(Dev)Mass:PrflStart-SP PP")
+        field(FTC,  "DOUBLE")
+        field(NOC,  "1")
+	field(INPD, "$(Sys)$(Dev)DB:PrflDataAll-Sts_")
+	field(FTD,  "SHORT")
+	field(NOD,  "1")
+	field(INPE, "$(Sys)$(Dev)Cmd:PrflDataAll-Buf_")
+	field(FTE,  "CHAR")
+	field(NOE,  "1000")
+	
+        field(OUTA, "$(Sys)$(Dev)DB:PrflRst-Sts_ PP")
+        field(FTVA, "SHORT")
+        field(NOVA, "1")
+	field(OUTB, "$(Sys)$(Dev)DB:PrflStop-Sts_ PP")
+	field(FTVB, "SHORT")
+	field(NOVB, "1")
+	field(OUTC, "$(Sys)$(Dev)DB:PrflProc-Sts_ PP")
+	field(FTVC, "SHORT")
+	field(NOVC, "1")
+	field(OUTD, "$(Sys)$(Dev)Time:Prfl-I PP")
+        field(FTVD, "LONG")
+        field(NOVD, "1")
+	field(OUTE, "$(Sys)$(Dev)Mass:PrflRaw-Wf")
+	field(FTVE, "DOUBLE")	
+	field(NOVE, "100")
+	field(OUTF, "$(Sys)$(Dev)P:PrflRaw-Wf")
+	field(FTVF, "DOUBLE")	
+	field(NOVF, "100")
+	field(OUTG, "$(Sys)$(Dev)Mass:PrflRaw-Wf.NELM PP")
+	field(FTVG, "LONG")
+	field(NOVG, "1")
+	field(OUTH, "$(Sys)$(Dev)P:PrflRaw-Wf.NELM PP")
+	field(FTVH, "LONG")
+	field(NOVH, "1")
+	field(OUTI, "$(Sys)$(Dev)DB:PrflDataAll-Sts_ PP")
+	field(FTVI, "SHORT")
+	field(NOVI, "1")
+	field(OUTJ, "$(Sys)$(Dev)DB:PrflCyc-Sts_ PP")
+	field(FTVJ, "SHORT")
+	field(NOVJ, "1")
+	field(FLNK, "$(Sys)$(Dev)DB:PrflDisp-ASub_")
+}
+
+# Reset compress record
+record(bi, "$(Sys)$(Dev)DB:PrflRst-Sts_")
+{
+        field(DESC, "Prfl Reset")
+        field(SDIS, "$(Sys)$(Dev)DB:PrflRaw-ASub_.VALA")
+        field(DISV, "0")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+	field(FLNK, "$(Sys)$(Dev)DB:PrflRst-Calc_")
+}
+
+record(calcout, "$(Sys)$(Dev)DB:PrflRst-Calc_")
+{
+	field(DESC, "Reset Compress")
+	field(INPA, "$(Sys)$(Dev)DB:PrflRst-Sts_")
+	field(INPB, "0")
+	field(SDIS, "$(Sys)$(Dev)DB:PrflRst-Sts_")
+	field(DISV, "0")
+	field(CALC, "B")
+	field(OUT,  "$(Sys)$(Dev)DB:PrflRst-DFOut_ PP")
+	field(FLNK, "$(Sys)$(Dev)Cnt:PrflCyc-Calc")
+}
+
+record (dfanout, "$(Sys)$(Dev)DB:PrflRst-DFOut_")
+{
+	field(DESC, "Prfl Reset Fanout")
+	field(OUTA, "$(Sys)$(Dev)Mass:Prfl-Buf.RES")
+	field(OUTB, "$(Sys)$(Dev)P:Prfl-Buf.RES")
+}
+
+# Stop polling 'data' command when scan finished
+record(bi, "$(Sys)$(Dev)DB:PrflStop-Sts_")
+{
+	field(DESC, "Prfl Stop Sts")
+	field(SDIS, "$(Sys)$(Dev)DB:PrflRaw-ASub_.VALB")
+	field(DISV, "0")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(FLNK, "$(Sys)$(Dev)Cmd:PrflStop-Cmd")
+}
+
+# No data processing if there's no reply
+record(bi, "$(Sys)$(Dev)DB:PrflProc-Sts_")
+{
+	field(DESC, "Prfl Data Sts")
+	field(ZNAM, "Process")
+	field(ONAM, "No Process")
+}
+
+# Hold the measurement time
+record(longin, "$(Sys)$(Dev)Time:Prfl-I")
+{
+        field(DESC, "Meas Time")
+        field(INP,  "$(Sys)$(Dev)DB:PrflRaw-ASub_.VALD")
+        field(EGU,  "ms")
+}
+
+# Hold returned mass in use for each data polling
+record(subArray, "$(Sys)$(Dev)Mass:PrflRaw-Wf")
+{
+	field(DESC, "Raw Prfl Mass Wf")
+	field(DTYP, "Soft Channel")
+	field(MALM, "100")
+	field(SDIS, "$(Sys)$(Dev)DB:PrflProc-Sts_")
+	field(DISV, "1")
+	field(FTVL, "DOUBLE")
+	field(INDX, "0")
+	field(PREC, "2")
+	field(FLNK, "$(Sys)$(Dev)Mass:Prfl-Buf")
+}
+
+# Hold returned mass measurement for each data polling
+record(subArray, "$(Sys)$(Dev)P:PrflRaw-Wf")
+{
+	field(DESC, "Raw Prfl Val Wf")
+	field(DTYP, "Soft Channel")
+	field(MALM, "100")
+	field(SDIS, "$(Sys)$(Dev)DB:PrflProc-Sts_")
+	field(DISV, "1")
+	field(FTVL, "DOUBLE")
+	field(INDX, "0")
+	field(PREC, "6")
+	field(FLNK, "$(Sys)$(Dev)P:Prfl-Buf")
+}
+
+# Hold mass/pressure measurement for each cycle
+record(compress, "$(Sys)$(Dev)Mass:Prfl-Buf")
+{
+        field(DESC, "Prfl Mass Buf")
+	field(ALG,  "Circular Buffer")
+        field(NSAM, "5000")
+	field(INP,  "$(Sys)$(Dev)Mass:PrflRaw-Wf")
+}
+
+record(compress, "$(Sys)$(Dev)P:Prfl-Buf")
+{
+        field(DESC, "Prfl Val Buf")
+        field(ALG,  "Circular Buffer")
+        field(NSAM, "5000")
+        field(INP,  "$(Sys)$(Dev)P:PrflRaw-Wf")
+}
+
+# End of one cycle
+record(bi, "$(Sys)$(Dev)DB:PrflCyc-Sts_")
+{
+	field(DESC, "Prfl One Cycle Sts")
+	field(ZNAM, "In Cycle")
+	field(ONAM, "Cmplt Cycle")
+	field(FLNK, "$(Sys)$(Dev)DB:PrflWf-ASub_")
+}
+
+# Calculate the scan cycle
+record(calc, "$(Sys)$(Dev)Cnt:PrflCyc-Calc")
+{
+	field(DESC, "Calc Prfl Cycle")
+	field(INPA, "$(Sys)$(Dev)Cnt:PrflCyc-Calc")
+ 	field(SDIS, "$(Sys)$(Dev)DB:PrflRst-Sts_")
+	field(DISV, "0")
+	field(CALC, "A+1")
+}
+
+# Process measurement values, parse them and put value into different arrays
+record(aSub, "$(Sys)$(Dev)DB:PrflWf-ASub_")
+{
+        field(DESC, "Prfl Measurement")
+        field(INAM, "asubScanMeasInit")
+        field(SNAM, "asubScanMeasWfProc")
+        field(INPA, "$(Sys)$(Dev)Mass:Prfl-Buf")
+        field(FTA,  "DOUBLE")
+        field(NOA,  "5000")
+        field(INPB, "$(Sys)$(Dev)P:Prfl-Buf")
+        field(FTB,  "DOUBLE")
+        field(NOB,  "5000")
+	field(SDIS, "$(Sys)$(Dev)DB:PrflCyc-Sts_")
+	field(DISV, "0")
+        field(OUTA, "$(Sys)$(Dev)Mass:Prfl-Wf PP")
+        field(FTVA, "DOUBLE")
+        field(NOVA, "5000")
+        field(OUTB, "$(Sys)$(Dev)P:Prfl-Wf PP")
+        field(FTVB, "DOUBLE")
+        field(NOVB, "5000")
+	field(FLNK, "$(Sys)$(Dev)DB:ParProc-FOut_")
+}
+
+# Array for measurement of one cycle
+record(waveform, "$(Sys)$(Dev)Mass:Prfl-Wf")
+{
+        field(DESC, "Prfl Mass Array")
+        field(FTVL, "DOUBLE")
+        field(NELM, "5000")
+}
+
+record(waveform, "$(Sys)$(Dev)P:Prfl-Wf")
+{
+        field(DESC, "Prfl Val Array")
+        field(FTVL, "DOUBLE")
+        field(NELM, "5000")
+}
+
+# Process to get measurement for display
+record(aSub, "$(Sys)$(Dev)DB:PrflDisp-ASub_")
+{
+	field(DESC, "Prfl Display")
+	field(INAM, "asubScanDispInit")
+	field(SNAM, "asubScanDispProc")
+	field(INPA, "$(Sys)$(Dev)Mass:Prfl-Wf NPP NMS")
+	field(FTA,  "DOUBLE")
+	field(NOA,  "5000")
+	field(INPB, "$(Sys)$(Dev)Mass:Prfl-Buf NPP NMS")
+	field(FTB,  "DOUBLE")
+	field(NOB,  "5000")
+	field(INPC, "$(Sys)$(Dev)P:Prfl-Wf NPP NMS")
+	field(FTC,  "DOUBLE")
+	field(NOC,  "5000")
+	field(INPD, "$(Sys)$(Dev)P:Prfl-Buf NPP NMS")
+	field(FTD,  "DOUBLE")
+	field(NOD,  "5000")
+	field(INPE, "$(Sys)$(Dev)Cnt:Prfl-Calc PP")
+	field(FTE,  "SHORT")
+	field(NOE,  "1")
+	field(INPF, "$(Sys)$(Dev)Mass:Prfl-Wf.STAT")
+        field(FTF,  "SHORT")
+        field(NOF,  "1")
+	field(OUTA, "$(Sys)$(Dev)Mass:PrflDisp-Wf PP")
+	field(FTVA, "DOUBLE")
+	field(NOVA, "5000")
+	field(OUTB, "$(Sys)$(Dev)P:PrflDisp-Wf PP")
+	field(FTVB, "DOUBLE")
+	field(NOVB, "5000")
+	field(OUTC, "$(Sys)$(Dev)DB:PrflDisp-Wf PP")
+	field(FTVC, "DOUBLE")
+	field(NOVC, "5000")
+}
+
+record(waveform, "$(Sys)$(Dev)Mass:PrflDisp-Wf")
+{
+        field(DESC, "Prfl Mass Disp")
+        field(FTVL, "DOUBLE")
+        field(NELM, "5000")
+        field(INP,  "$(Sys)$(Dev)DB:PrflDisp-ASub_.VALA")
+}
+
+record(waveform, "$(Sys)$(Dev)P:PrflDisp-Wf")
+{
+        field(DESC, "Prfl P Disp")
+        field(FTVL, "DOUBLE")
+        field(NELM, "5000")
+        field(INP,  "$(Sys)$(Dev)DB:PrflDisp-ASub_.VALB")
+}
+
+record(waveform, "$(Sys)$(Dev)DB:PrflDisp-Wf")
+{
+        field(DESC, "Prfl X Disp")
+        field(FTVL, "DOUBLE")
+        field(NELM, "5000")
+        field(INP,  "$(Sys)$(Dev)DB:PrflDisp-ASub_.VALC")
+}
+
+## Stop the recall of data
+record(bo, "$(Sys)$(Dev)Cmd:PrflStop-Cmd")
+{
+	field(DESC, "Stop Task")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto prflStop($(Sys),$(Dev)) $(PORT)")
+        field(ASG,  "VAWRITE")
+	field(SDIS, "$(Sys)$(Dev)Cmd:Prfl-Buf.SCAN")
+	field(DISV, "0")
+	field(FLNK, "$(Sys)$(Dev)DB:PrflStop-Seq_")
+}
+
+record(waveform, "$(Sys)$(Dev)Val:PrflStop-Wf")
+{
+        field(DESC, "Prfl Stop Meas")
+        field(FTVL, "STRING")
+        field(NELM, "50")
+	field(SDIS, "$(Sys)$(Dev)Cmd:Prfl-Buf.SCAN")
+        field(DISV, "0")
+}
+
+# Pause scan
+record(bo, "$(Sys)$(Dev)Cmd:PrflPause-Cmd")
+{
+	field(DESC, "Pause Scan")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto scanPause $(PORT)")	
+	field(FLNK, "$(Sys)$(Dev)DB:PrflPause-Cmd_")
+        field(ASG,  "VAWRITE")
+}
+
+#  Disable 'data' command 
+record(bo, "$(Sys)$(Dev)DB:PrflPause-Cmd_")
+{
+	field(DESC, "Pause Scan")
+	field(VAL,  "0")
+	field(OUT, "$(Sys)$(Dev)Cmd:Prfl-Buf.SCAN")
+}
+
+# Continue scan
+record(bo, "$(Sys)$(Dev)Cmd:PrflCont-Cmd")
+{
+	field(DESC, "Continue Scan")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto scanContinue $(PORT)")	
+	field(FLNK, "$(Sys)$(Dev)DB:PrflCont-Cmd_")
+        field(ASG,  "VAWRITE")
+}
+
+#  Enable 'data' command 
+record(bo, "$(Sys)$(Dev)DB:PrflCont-Cmd_")
+{
+	field(DESC, "Continue Scan")
+	field(VAL,  "7")
+	field(OUT, "$(Sys)$(Dev)Cmd:Prfl-Buf.SCAN")
+}
+
+# Stop at the end of current cycle
+record(bo, "$(Sys)$(Dev)Cmd:PrflStopEnd-Cmd")
+{
+        field(DESC, "Stop Scan at end")
+        field(DTYP, "stream")
+        field(OUT,  "@hiden_rga.proto scanStop $(PORT)")
+        field(ASG,  "VAWRITE")
+}
+
+#  Local environment
+record(longout, "$(Sys)$(Dev)E:PrflFocus-SP")
+{
+	field(DESC, "Prfl Focus")
+	field(LOPR, "-200")
+	field(HOPR, "0")
+	field(EGU,  "V")
+	field(VAL,  "-90")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)E:PrflDeltaM-SP")
+{
+	field(DESC, "Prfl Delta-M")
+	field(LOPR, "-100")
+	field(HOPR, "100")
+	field(EGU,  "%")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)Res:Prfl-SP")
+{
+	field(DESC, "Prfl Resolution")
+	field(LOPR, "-100")
+	field(HOPR, "100")
+	field(EGU,  "%")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)E:PrflCage-SP")
+{
+	field(DESC, "Prfl Cage")
+	field(PREC, "1")
+	field(LOPR, "-10")
+	field(HOPR, "10")
+	field(EGU,  "V")
+	field(VAL,  "3")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Enrgy:PrflE-SP")
+{
+	field(DESC, "Prfl E-Energy")
+	field(LOPR, "4")
+	field(HOPR, "150")
+	field(PREC, "1")
+	field(EGU,  "V")
+	field(VAL,  "70")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Emis:Prfl-SP")
+{
+	field(DESC, "Prfl Emission")
+	field(PREC, "3")
+	field(LOPR, "20")
+	field(HOPR, "5000")
+	field(EGU,  "uA")
+	field(VAL,  "200")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Mass:Prfl-SP")
+{
+	field(DESC, "Prfl Mass")
+	field(PREC, "2")
+	field(LOPR, "0.4")
+	field(HOPR, "100")
+	field(EGU,  "amu")
+	field(VAL,  "5.5")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)Time:PrflModeChngDly-SP")
+{
+	field(DESC, "Prfl Mode-C-Dly")
+	field(LOPR, "0")
+	field(HOPR, "10000000")
+	field(EGU,  "ms")
+	field(VAL,  "1000")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:PrflEnv-Cmd")
+{
+	field(DESC, "Environment Cmd")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto localSet($(Sys),$(Dev),Prfl) $(PORT)")	
+	field(SDIS, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+        field(DISV, "1")
+        field(ASG,  "VAWRITE")
+}

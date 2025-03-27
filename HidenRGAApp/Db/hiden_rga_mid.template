@@ -1,0 +1,1786 @@
+## Database for Hiden RC Interface RGA
+
+## Set up parameters for MID mode
+# Set particular mass 1
+record(longout, "$(Sys)$(Dev)Mass:MID1-SP")
+{
+	field(DESC, "Set Start Mass")
+	field(LOPR, "1")
+	field(HOPR, "100")
+	field(VAL,  "1")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set detector type
+record(mbbo, "$(Sys)$(Dev)Type:MID1Detr-Sel")
+{
+	field(DESC, "Set Detector Type")
+	field(ZRST, "Faraday")
+	field(ONST, "SEM")
+	field(VAL,  "1")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+#  Check autoranging
+record(bo, "$(Sys)$(Dev)P:MID1AutoRng-Sel")
+{
+	field(DESC, "Set Autoranging")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(VAL,  "1")
+	field(FLNK, "$(Sys)$(Dev)DB:MID1Rng-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Download data to controller
+record(fanout, "$(Sys)$(Dev)DB:MID1Rng-FOut_")
+{
+	field(DESC, "MID1 Range Fanout")
+	field(SDIS, "$(Sys)$(Dev)P:MID1AutoRng-Sel")
+	field(DISV, "0")
+	field(LNK1, "$(Sys)$(Dev)DB:MID1F_Rng-Seq_")
+	field(LNK2, "$(Sys)$(Dev)DB:MID1SEM_Rng-Seq_")
+}
+
+# Set the pressure range limit for autoranging
+record(seq, "$(Sys)$(Dev)DB:MID1F_Rng-Seq_")
+{
+	field(DESC, "Faraday Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:MID1Detr-Sel")
+	field(DISV, "1")
+	field(DOL1, "$(Sys)$(Dev)P:F_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:MID1Lo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:MID1Hi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:MID1Curt-SP PP")
+}
+
+record(seq, "$(Sys)$(Dev)DB:MID1SEM_Rng-Seq_")
+{
+	field(DESC, "SEM Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:MID1Detr-Sel")
+	field(DISV, "0")
+	field(DOL1, "$(Sys)$(Dev)P:SEM_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:MID1Lo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:MID1Hi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:MID1Curt-SP PP")
+}
+# Set the low pressure range limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID1Lo-SP")
+{
+	field(DESC, "Set Low Pr")
+	field(LOPR, "-13")
+	field(HOPR, "-10")
+	field(VAL,  "-13")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the high pressure limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID1Hi-SP")
+{
+	field(DESC, "Set High Pr")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the initial range
+record(longout, "$(Sys)$(Dev)P:MID1Curt-SP")
+{
+	field(DESC, "Set Current")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Parameters set for MID mode download to RGA
+record(bo, "$(Sys)$(Dev)Cmd:MID1Set-Cmd")
+{
+	field(DESC, "Set MID Para")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto midSet1($(Sys),$(Dev)) $(PORT)")
+	field(SDIS, "$(Sys)$(Dev)Cmd:MID1Set-Cmd_")
+	field(DISV, "0")
+        field(ASG,  "VAWRITE")
+}
+
+# Set particular mass 2
+record(longout, "$(Sys)$(Dev)Mass:MID2-SP")
+{
+	field(DESC, "Set Start Mass")
+	field(LOPR, "1")
+	field(HOPR, "100")
+	field(VAL,  "2")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set detector type
+record(mbbo, "$(Sys)$(Dev)Type:MID2Detr-Sel")
+{
+	field(DESC, "Set Detector Type")
+	field(ZRST, "Faraday")
+	field(ONST, "SEM")
+	field(VAL,  "1")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+#  Check autoranging
+record(bo, "$(Sys)$(Dev)P:MID2AutoRng-Sel")
+{
+	field(DESC, "Set Autoranging")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(VAL,  "1")
+	field(FLNK, "$(Sys)$(Dev)DB:MID2Rng-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Download data to controller
+record(fanout, "$(Sys)$(Dev)DB:MID2Rng-FOut_")
+{
+	field(DESC, "MID2 Range Fanout")
+	field(SDIS, "$(Sys)$(Dev)P:MID2AutoRng-Sel")
+	field(DISV, "0")
+	field(LNK1, "$(Sys)$(Dev)DB:MID2F_Rng-Seq_")
+	field(LNK2, "$(Sys)$(Dev)DB:MID2SEM_Rng-Seq_")
+}
+
+# Set the low pressure range limit for autoranging
+record(seq, "$(Sys)$(Dev)DB:MID2F_Rng-Seq_")
+{
+	field(DESC, "Faraday Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:MID2Detr-Sel")
+	field(DISV, "1")
+	field(DOL1, "$(Sys)$(Dev)P:F_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:MID2Lo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:MID2Hi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:MID2Curt-SP PP")
+}
+
+record(seq, "$(Sys)$(Dev)DB:MID2SEM_Rng-Seq_")
+{
+	field(DESC, "SEM Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:MID2Detr-Sel")
+	field(DISV, "0")
+	field(DOL1, "$(Sys)$(Dev)P:SEM_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:MID2Lo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:MID2Hi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:MID2Curt-SP PP")
+}
+# Set the low pressure range limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID2Lo-SP")
+{
+	field(DESC, "Set Low Pr")
+	field(LOPR, "-13")
+	field(HOPR, "-10")
+	field(VAL,  "-13")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the high pressure limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID2Hi-SP")
+{
+	field(DESC, "Set High Pr")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the initial range
+record(longout, "$(Sys)$(Dev)P:MID2Curt-SP")
+{
+	field(DESC, "Set Current")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Parameters set for MID mode download to RGA
+record(bo, "$(Sys)$(Dev)Cmd:MID2Set-Cmd")
+{
+	field(DESC, "Set MID Para")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto midSet2($(Sys),$(Dev)) $(PORT)")
+        field(SDIS, "$(Sys)$(Dev)Cmd:MID2Set-Cmd_")
+        field(DISV, "0")
+        field(ASG,  "VAWRITE")
+}
+
+# Set particular mass 3
+record(longout, "$(Sys)$(Dev)Mass:MID3-SP")
+{
+	field(DESC, "Set Start Mass")
+	field(LOPR, "1")
+	field(HOPR, "100")
+	field(VAL,  "12")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set detector type
+record(mbbo, "$(Sys)$(Dev)Type:MID3Detr-Sel")
+{
+	field(DESC, "Set Detector Type")
+	field(ZRST, "Faraday")
+	field(ONST, "SEM")
+	field(VAL,  "1")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+#  Check autoranging
+record(bo, "$(Sys)$(Dev)P:MID3AutoRng-Sel")
+{
+	field(DESC, "Set Autoranging")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(VAL,  "1")
+	field(FLNK, "$(Sys)$(Dev)DB:MID3Rng-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Download data to controller
+record(fanout, "$(Sys)$(Dev)DB:MID3Rng-FOut_")
+{
+	field(DESC, "MID3 Range Fanout")
+	field(SDIS, "$(Sys)$(Dev)P:MID3AutoRng-Sel")
+	field(DISV, "0")
+	field(LNK1, "$(Sys)$(Dev)DB:MID3F_Rng-Seq_")
+	field(LNK2, "$(Sys)$(Dev)DB:MID3SEM_Rng-Seq_")
+}
+
+# Set the low pressure range limit for autoranging
+record(seq, "$(Sys)$(Dev)DB:MID3F_Rng-Seq_")
+{
+	field(DESC, "Faraday Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:MID3Detr-Sel")
+	field(DISV, "1")
+	field(DOL1, "$(Sys)$(Dev)P:F_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:MID3Lo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:MID3Hi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:MID3Curt-SP PP")
+}
+
+record(seq, "$(Sys)$(Dev)DB:MID3SEM_Rng-Seq_")
+{
+	field(DESC, "SEM Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:MID3Detr-Sel")
+	field(DISV, "0")
+	field(DOL1, "$(Sys)$(Dev)P:SEM_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:MID3Lo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:MID3Hi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:MID3Curt-SP PP")
+}
+# Set the low pressure range limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID3Lo-SP")
+{
+	field(DESC, "Set Low Pr")
+	field(LOPR, "-13")
+	field(HOPR, "-10")
+	field(VAL,  "-13")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the high pressure limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID3Hi-SP")
+{
+	field(DESC, "Set High Pr")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the initial range
+record(longout, "$(Sys)$(Dev)P:MID3Curt-SP")
+{
+	field(DESC, "Set Current")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Parameters set for MID mode download to RGA
+record(bo, "$(Sys)$(Dev)Cmd:MID3Set-Cmd")
+{
+	field(DESC, "Set MID Para")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto midSet3($(Sys),$(Dev)) $(PORT)")
+        field(SDIS, "$(Sys)$(Dev)Cmd:MID3Set-Cmd_")
+        field(DISV, "0")
+        field(ASG,  "VAWRITE")
+}
+
+# Set particular mass 4
+record(longout, "$(Sys)$(Dev)Mass:MID4-SP")
+{
+	field(DESC, "Set Start Mass")
+	field(LOPR, "1")
+	field(HOPR, "100")
+	field(VAL,  "16")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set detector type
+record(mbbo, "$(Sys)$(Dev)Type:MID4Detr-Sel")
+{
+	field(DESC, "Set Detector Type")
+	field(ZRST, "Faraday")
+	field(ONST, "SEM")
+	field(VAL,  "1")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+#  Check autoranging
+record(bo, "$(Sys)$(Dev)P:MID4AutoRng-Sel")
+{
+	field(DESC, "Set Autoranging")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(VAL,  "1")
+	field(FLNK, "$(Sys)$(Dev)DB:MID4Rng-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Download data to controller
+record(fanout, "$(Sys)$(Dev)DB:MID4Rng-FOut_")
+{
+	field(DESC, "MID4 Range Fanout")
+	field(SDIS, "$(Sys)$(Dev)P:MID4AutoRng-Sel")
+	field(DISV, "0")
+	field(LNK1, "$(Sys)$(Dev)DB:MID4F_Rng-Seq_")
+	field(LNK2, "$(Sys)$(Dev)DB:MID4SEM_Rng-Seq_")
+}
+
+#  Set autorange 
+record(seq, "$(Sys)$(Dev)DB:MID4F_Rng-Seq_")
+{
+	field(DESC, "Faraday Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:MID4Detr-Sel")
+	field(DISV, "1")
+	field(DOL1, "$(Sys)$(Dev)P:F_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:MID4Lo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:MID4Hi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:MID4Curt-SP PP")
+}
+
+record(seq, "$(Sys)$(Dev)DB:MID4SEM_Rng-Seq_")
+{
+	field(DESC, "SEM Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:MID4Detr-Sel")
+	field(DISV, "0")
+	field(DOL1, "$(Sys)$(Dev)P:SEM_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:MID4Lo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:MID4Hi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:MID4Curt-SP PP")
+}
+# Set the low pressure range limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID4Lo-SP")
+{
+	field(DESC, "Set Low Pr")
+	field(LOPR, "-13")
+	field(HOPR, "-10")
+	field(VAL,  "-13")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the high pressure limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID4Hi-SP")
+{
+	field(DESC, "Set High Pr")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the initial range
+record(longout, "$(Sys)$(Dev)P:MID4Curt-SP")
+{
+	field(DESC, "Set Current")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Parameters set for MID mode download to RGA
+record(bo, "$(Sys)$(Dev)Cmd:MID4Set-Cmd")
+{
+	field(DESC, "Set MID Para")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto midSet4($(Sys),$(Dev)) $(PORT)")
+        field(SDIS, "$(Sys)$(Dev)Cmd:MID4Set-Cmd_")
+        field(DISV, "0")
+        field(ASG,  "VAWRITE")
+}
+
+# Set particular mass 5
+record(longout, "$(Sys)$(Dev)Mass:MID5-SP")
+{
+	field(DESC, "Set Start Mass")
+	field(LOPR, "1")
+	field(HOPR, "100")
+	field(VAL,  "18")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set detector type
+record(mbbo, "$(Sys)$(Dev)Type:MID5Detr-Sel")
+{
+	field(DESC, "Set Detector Type")
+	field(ZRST, "Faraday")
+	field(ONST, "SEM")
+	field(VAL,  "1")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+#  Check autoranging
+record(bo, "$(Sys)$(Dev)P:MID5AutoRng-Sel")
+{
+	field(DESC, "Set Autoranging")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(VAL,  "1")
+	field(FLNK, "$(Sys)$(Dev)DB:MID5Rng-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Download data to controller
+record(fanout, "$(Sys)$(Dev)DB:MID5Rng-FOut_")
+{
+	field(DESC, "MID5 Range Fanout")
+	field(SDIS, "$(Sys)$(Dev)P:MID5AutoRng-Sel")
+	field(DISV, "0")
+	field(LNK1, "$(Sys)$(Dev)DB:MID5F_Rng-Seq_")
+	field(LNK2, "$(Sys)$(Dev)DB:MID5SEM_Rng-Seq_")
+}
+
+#  Set autorange 
+record(seq, "$(Sys)$(Dev)DB:MID5F_Rng-Seq_")
+{
+	field(DESC, "Faraday Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:MID5Detr-Sel")
+	field(DISV, "1")
+	field(DOL1, "$(Sys)$(Dev)P:F_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:MID5Lo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:MID5Hi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:MID5Curt-SP PP")
+}
+
+record(seq, "$(Sys)$(Dev)DB:MID5SEM_Rng-Seq_")
+{
+	field(DESC, "SEM Range")
+	field(SELM, "All")
+	field(SDIS, "$(Sys)$(Dev)Type:MID5Detr-Sel")
+	field(DISV, "0")
+	field(DOL1, "$(Sys)$(Dev)P:SEM_RngMin-RB PP")
+	field(DOL2, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(DOL3, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+	field(LNK1, "$(Sys)$(Dev)P:MID5Lo-SP PP")
+	field(LNK2, "$(Sys)$(Dev)P:MID5Hi-SP PP")
+	field(LNK3, "$(Sys)$(Dev)P:MID5Curt-SP PP")
+}
+# Set the low pressure range limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID5Lo-SP")
+{
+	field(DESC, "Set Low Pr")
+	field(LOPR, "-13")
+	field(HOPR, "-10")
+	field(VAL,  "-13")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the high pressure limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID5Hi-SP")
+{
+	field(DESC, "Set High Pr")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the initial range
+record(longout, "$(Sys)$(Dev)P:MID5Curt-SP")
+{
+	field(DESC, "Set Current")
+	field(LOPR, "-10")
+	field(HOPR, "-5")
+	field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Parameters set for MID mode download to RGA
+record(bo, "$(Sys)$(Dev)Cmd:MID5Set-Cmd")
+{
+	field(DESC, "Set MID Para")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto midSet5($(Sys),$(Dev)) $(PORT)")
+        field(ASG,  "VAWRITE")
+        field(SDIS, "$(Sys)$(Dev)Cmd:MID5Set-Cmd_")
+        field(DISV, "0")
+}
+
+## Set up parameters for MID mode
+# Set particular mass 6
+record(longout, "$(Sys)$(Dev)Mass:MID6-SP")
+{
+        field(DESC, "Set Start Mass")
+        field(LOPR, "1")
+        field(HOPR, "100")
+        field(VAL,  "28")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set detector type
+record(mbbo, "$(Sys)$(Dev)Type:MID6Detr-Sel")
+{
+        field(DESC, "Set Detector Type")
+        field(ZRST, "Faraday")
+        field(ONST, "SEM")
+        field(VAL,  "1")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+#  Check autoranging
+record(bo, "$(Sys)$(Dev)P:MID6AutoRng-Sel")
+{
+        field(DESC, "Set Autoranging")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+        field(VAL,  "1")
+        field(FLNK, "$(Sys)$(Dev)DB:MID6Rng-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Download data to controller
+record(fanout, "$(Sys)$(Dev)DB:MID6Rng-FOut_")
+{
+        field(DESC, "MID6 Range Fanout")
+        field(SDIS, "$(Sys)$(Dev)P:MID6AutoRng-Sel")
+        field(DISV, "0")
+        field(LNK1, "$(Sys)$(Dev)DB:MID6F_Rng-Seq_")
+        field(LNK2, "$(Sys)$(Dev)DB:MID6SEM_Rng-Seq_")
+}
+
+# Set the pressure range limit for autoranging
+record(seq, "$(Sys)$(Dev)DB:MID6F_Rng-Seq_")
+{
+        field(DESC, "Faraday Range")
+        field(SELM, "All")
+        field(SDIS, "$(Sys)$(Dev)Type:MID6Detr-Sel")
+        field(DISV, "1")
+        field(DOL1, "$(Sys)$(Dev)P:F_RngMin-RB PP")
+        field(DOL2, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+        field(DOL3, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+        field(LNK1, "$(Sys)$(Dev)P:MID6Lo-SP PP")
+        field(LNK2, "$(Sys)$(Dev)P:MID6Hi-SP PP")
+        field(LNK3, "$(Sys)$(Dev)P:MID6Curt-SP PP")
+}
+
+record(seq, "$(Sys)$(Dev)DB:MID6SEM_Rng-Seq_")
+{
+        field(DESC, "SEM Range")
+        field(SELM, "All")
+        field(SDIS, "$(Sys)$(Dev)Type:MID6Detr-Sel")
+        field(DISV, "0")
+        field(DOL1, "$(Sys)$(Dev)P:SEM_RngMin-RB PP")
+        field(DOL2, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+        field(DOL3, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+        field(LNK1, "$(Sys)$(Dev)P:MID6Lo-SP PP")
+        field(LNK2, "$(Sys)$(Dev)P:MID6Hi-SP PP")
+        field(LNK3, "$(Sys)$(Dev)P:MID6Curt-SP PP")
+}
+# Set the low pressure range limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID6Lo-SP")
+{
+        field(DESC, "Set Low Pr")
+        field(LOPR, "-13")
+        field(HOPR, "-10")
+        field(VAL,  "-13")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the high pressure limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID6Hi-SP")
+{
+        field(DESC, "Set High Pr")
+        field(LOPR, "-10")
+        field(HOPR, "-5")
+        field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the initial range
+record(longout, "$(Sys)$(Dev)P:MID6Curt-SP")
+{
+        field(DESC, "Set Current")
+        field(LOPR, "-10")
+        field(HOPR, "-5")
+        field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Parameters set for MID mode download to RGA
+record(bo, "$(Sys)$(Dev)Cmd:MID6Set-Cmd")
+{
+        field(DESC, "Set MID Para")
+        field(DTYP, "stream")
+        field(OUT,  "@hiden_rga.proto midSet6($(Sys),$(Dev)) $(PORT)")
+        field(SDIS, "$(Sys)$(Dev)Cmd:MID6Set-Cmd_")
+        field(DISV, "0")
+        field(ASG,  "VAWRITE")
+}
+
+# Set particular mass 7
+record(longout, "$(Sys)$(Dev)Mass:MID7-SP")
+{
+        field(DESC, "Set Start Mass")
+        field(LOPR, "1")
+        field(HOPR, "100")
+        field(VAL,  "30")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set detector type
+record(mbbo, "$(Sys)$(Dev)Type:MID7Detr-Sel")
+{
+        field(DESC, "Set Detector Type")
+        field(ZRST, "Faraday")
+        field(ONST, "SEM")
+        field(VAL,  "1")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+#  Check autoranging
+record(bo, "$(Sys)$(Dev)P:MID7AutoRng-Sel")
+{
+        field(DESC, "Set Autoranging")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+        field(VAL,  "1")
+        field(FLNK, "$(Sys)$(Dev)DB:MID7Rng-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Download data to controller
+record(fanout, "$(Sys)$(Dev)DB:MID7Rng-FOut_")
+{
+        field(DESC, "MID7 Range Fanout")
+        field(SDIS, "$(Sys)$(Dev)P:MID7AutoRng-Sel")
+        field(DISV, "0")
+        field(LNK1, "$(Sys)$(Dev)DB:MID7F_Rng-Seq_")
+        field(LNK2, "$(Sys)$(Dev)DB:MID7SEM_Rng-Seq_")
+}
+
+# Set the pressure range limit for autoranging
+record(seq, "$(Sys)$(Dev)DB:MID7F_Rng-Seq_")
+{
+        field(DESC, "Faraday Range")
+        field(SELM, "All")
+        field(SDIS, "$(Sys)$(Dev)Type:MID7Detr-Sel")
+        field(DISV, "1")
+        field(DOL1, "$(Sys)$(Dev)P:F_RngMin-RB PP")
+        field(DOL2, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+        field(DOL3, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+        field(LNK1, "$(Sys)$(Dev)P:MID7Lo-SP PP")
+        field(LNK2, "$(Sys)$(Dev)P:MID7Hi-SP PP")
+        field(LNK3, "$(Sys)$(Dev)P:MID7Curt-SP PP")
+}
+
+record(seq, "$(Sys)$(Dev)DB:MID7SEM_Rng-Seq_")
+{
+        field(DESC, "SEM Range")
+        field(SELM, "All")
+        field(SDIS, "$(Sys)$(Dev)Type:MID7Detr-Sel")
+        field(DISV, "0")
+        field(DOL1, "$(Sys)$(Dev)P:SEM_RngMin-RB PP")
+        field(DOL2, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+        field(DOL3, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+        field(LNK1, "$(Sys)$(Dev)P:MID7Lo-SP PP")
+        field(LNK2, "$(Sys)$(Dev)P:MID7Hi-SP PP")
+        field(LNK3, "$(Sys)$(Dev)P:MID7Curt-SP PP")
+}
+# Set the low pressure range limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID7Lo-SP")
+{
+        field(DESC, "Set Low Pr")
+        field(LOPR, "-13")
+        field(HOPR, "-10")
+        field(VAL,  "-13")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the high pressure limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID7Hi-SP")
+{
+        field(DESC, "Set High Pr")
+        field(LOPR, "-10")
+        field(HOPR, "-5")
+        field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the initial range
+record(longout, "$(Sys)$(Dev)P:MID7Curt-SP")
+{
+        field(DESC, "Set Current")
+        field(LOPR, "-10")
+        field(HOPR, "-5")
+        field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Parameters set for MID mode download to RGA
+record(bo, "$(Sys)$(Dev)Cmd:MID7Set-Cmd")
+{
+        field(DESC, "Set MID Para")
+        field(DTYP, "stream")
+        field(OUT,  "@hiden_rga.proto midSet7($(Sys),$(Dev)) $(PORT)")
+        field(SDIS, "$(Sys)$(Dev)Cmd:MID7Set-Cmd_")
+        field(DISV, "0")
+        field(ASG,  "VAWRITE")
+}
+
+# Set particular mass 8
+record(longout, "$(Sys)$(Dev)Mass:MID8-SP")
+{
+        field(DESC, "Set Start Mass")
+        field(LOPR, "1")
+        field(HOPR, "100")
+        field(VAL,  "32")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set detector type
+record(mbbo, "$(Sys)$(Dev)Type:MID8Detr-Sel")
+{
+        field(DESC, "Set Detector Type")
+        field(ZRST, "Faraday")
+        field(ONST, "SEM")
+        field(VAL,  "1")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+#  Check autoranging
+record(bo, "$(Sys)$(Dev)P:MID8AutoRng-Sel")
+{
+        field(DESC, "Set Autoranging")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+        field(VAL,  "1")
+        field(FLNK, "$(Sys)$(Dev)DB:MID8Rng-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Download data to controller
+record(fanout, "$(Sys)$(Dev)DB:MID8Rng-FOut_")
+{
+        field(DESC, "MID8 Range Fanout")
+        field(SDIS, "$(Sys)$(Dev)P:MID8AutoRng-Sel")
+        field(DISV, "0")
+        field(LNK1, "$(Sys)$(Dev)DB:MID8F_Rng-Seq_")
+        field(LNK2, "$(Sys)$(Dev)DB:MID8SEM_Rng-Seq_")
+}
+
+# Set the pressure range limit for autoranging
+record(seq, "$(Sys)$(Dev)DB:MID8F_Rng-Seq_")
+{
+        field(DESC, "Faraday Range")
+        field(SELM, "All")
+        field(SDIS, "$(Sys)$(Dev)Type:MID8Detr-Sel")
+        field(DISV, "1")
+        field(DOL1, "$(Sys)$(Dev)P:F_RngMin-RB PP")
+        field(DOL2, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+        field(DOL3, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+        field(LNK1, "$(Sys)$(Dev)P:MID8Lo-SP PP")
+        field(LNK2, "$(Sys)$(Dev)P:MID8Hi-SP PP")
+        field(LNK3, "$(Sys)$(Dev)P:MID8Curt-SP PP")
+}
+
+record(seq, "$(Sys)$(Dev)DB:MID8SEM_Rng-Seq_")
+{
+        field(DESC, "SEM Range")
+        field(SELM, "All")
+        field(SDIS, "$(Sys)$(Dev)Type:MID8Detr-Sel")
+        field(DISV, "0")
+        field(DOL1, "$(Sys)$(Dev)P:SEM_RngMin-RB PP")
+        field(DOL2, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+        field(DOL3, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+        field(LNK1, "$(Sys)$(Dev)P:MID8Lo-SP PP")
+        field(LNK2, "$(Sys)$(Dev)P:MID8Hi-SP PP")
+        field(LNK3, "$(Sys)$(Dev)P:MID8Curt-SP PP")
+}
+# Set the low pressure range limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID8Lo-SP")
+{
+        field(DESC, "Set Low Pr")
+        field(LOPR, "-13")
+        field(HOPR, "-10")
+        field(VAL,  "-13")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the high pressure limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID8Hi-SP")
+{
+        field(DESC, "Set High Pr")
+        field(LOPR, "-10")
+        field(HOPR, "-5")
+        field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the initial range
+record(longout, "$(Sys)$(Dev)P:MID8Curt-SP")
+{
+        field(DESC, "Set Current")
+        field(LOPR, "-10")
+        field(HOPR, "-5")
+        field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Parameters set for MID mode download to RGA
+record(bo, "$(Sys)$(Dev)Cmd:MID8Set-Cmd")
+{
+        field(DESC, "Set MID Para")
+        field(DTYP, "stream")
+        field(OUT,  "@hiden_rga.proto midSet8($(Sys),$(Dev)) $(PORT)")
+        field(SDIS, "$(Sys)$(Dev)Cmd:MID8Set-Cmd_")
+        field(DISV, "0")
+        field(ASG,  "VAWRITE")
+}
+
+# Set particular mass 9
+record(longout, "$(Sys)$(Dev)Mass:MID9-SP")
+{
+        field(DESC, "Set Start Mass")
+        field(LOPR, "1")
+        field(HOPR, "100")
+        field(VAL,  "44")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set detector type
+record(mbbo, "$(Sys)$(Dev)Type:MID9Detr-Sel")
+{
+        field(DESC, "Set Detector Type")
+        field(ZRST, "Faraday")
+        field(ONST, "SEM")
+        field(VAL,  "1")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+#  Check autoranging
+record(bo, "$(Sys)$(Dev)P:MID9AutoRng-Sel")
+{
+        field(DESC, "Set Autoranging")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+        field(VAL,  "1")
+        field(FLNK, "$(Sys)$(Dev)DB:MID9Rng-FOut_")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Download data to controller
+record(fanout, "$(Sys)$(Dev)DB:MID9Rng-FOut_")
+{
+        field(DESC, "MID9 Range Fanout")
+        field(SDIS, "$(Sys)$(Dev)P:MID9AutoRng-Sel")
+        field(DISV, "0")
+        field(LNK1, "$(Sys)$(Dev)DB:MID9F_Rng-Seq_")
+        field(LNK2, "$(Sys)$(Dev)DB:MID9SEM_Rng-Seq_")
+}
+
+# Set the pressure range limit for autoranging
+record(seq, "$(Sys)$(Dev)DB:MID9F_Rng-Seq_")
+{
+        field(DESC, "Faraday Range")
+        field(SELM, "All")
+        field(SDIS, "$(Sys)$(Dev)Type:MID9Detr-Sel")
+        field(DISV, "1")
+        field(DOL1, "$(Sys)$(Dev)P:F_RngMin-RB PP")
+        field(DOL2, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+        field(DOL3, "$(Sys)$(Dev)P:F_RngMax-RB PP")
+        field(LNK1, "$(Sys)$(Dev)P:MID9Lo-SP PP")
+        field(LNK2, "$(Sys)$(Dev)P:MID9Hi-SP PP")
+        field(LNK3, "$(Sys)$(Dev)P:MID9Curt-SP PP")
+}
+
+record(seq, "$(Sys)$(Dev)DB:MID9SEM_Rng-Seq_")
+{
+        field(DESC, "SEM Range")
+        field(SELM, "All")
+        field(SDIS, "$(Sys)$(Dev)Type:MID9Detr-Sel")
+        field(DISV, "0")
+        field(DOL1, "$(Sys)$(Dev)P:SEM_RngMin-RB PP")
+        field(DOL2, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+        field(DOL3, "$(Sys)$(Dev)P:SEM_RngMax-RB PP")
+        field(LNK1, "$(Sys)$(Dev)P:MID9Lo-SP PP")
+        field(LNK2, "$(Sys)$(Dev)P:MID9Hi-SP PP")
+        field(LNK3, "$(Sys)$(Dev)P:MID9Curt-SP PP")
+}
+
+# Set the low pressure range limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID9Lo-SP")
+{
+        field(DESC, "Set Low Pr")
+        field(LOPR, "-13")
+        field(HOPR, "-10")
+        field(VAL,  "-13")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the high pressure limit for autoranging
+record(longout, "$(Sys)$(Dev)P:MID9Hi-SP")
+{
+        field(DESC, "Set High Pr")
+        field(LOPR, "-10")
+        field(HOPR, "-5")
+        field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Set the initial range
+record(longout, "$(Sys)$(Dev)P:MID9Curt-SP")
+{
+        field(DESC, "Set Current")
+        field(LOPR, "-10")
+        field(HOPR, "-5")
+        field(VAL,  "-7")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Parameters set for MID mode download to RGA
+record(bo, "$(Sys)$(Dev)Cmd:MID9Set-Cmd")
+{
+        field(DESC, "Set MID Para")
+        field(DTYP, "stream")
+        field(OUT,  "@hiden_rga.proto midSet9($(Sys),$(Dev)) $(PORT)")
+        field(SDIS, "$(Sys)$(Dev)Cmd:MID9Set-Cmd_")
+        field(DISV, "0")
+        field(ASG,  "VAWRITE")
+}
+
+# Parameters set for MID mode download to RGA
+record(bo, "$(Sys)$(Dev)Cmd:MID1Set-Cmd_")
+{
+        field(DESC, "Soft MID1 Para")
+        field(ZNAM, "Not Checked")
+	field(ONAM, "Checked")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:MID2Set-Cmd_")
+{
+        field(DESC, "Soft MID2 Para")
+        field(ZNAM, "Not Checked")
+	field(ONAM, "Checked")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:MID3Set-Cmd_")
+{
+        field(DESC, "Soft MID3 Para")
+        field(ZNAM, "Not Checked")
+	field(ONAM, "Checked")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:MID4Set-Cmd_")
+{
+        field(DESC, "Soft MID4 Para")
+        field(ZNAM, "Not Checked")
+	field(ONAM, "Checked")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:MID5Set-Cmd_")
+{
+        field(DESC, "Soft MID5 Para")
+        field(ZNAM, "Not Checked")
+	field(ONAM, "Checked")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:MID6Set-Cmd_")
+{
+        field(DESC, "Soft MID6 Para")
+        field(ZNAM, "Not Checked")
+	field(ONAM, "Checked")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:MID7Set-Cmd_")
+{
+        field(DESC, "Soft MID7 Para")
+        field(ZNAM, "Not Checked")
+	field(ONAM, "Checked")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:MID8Set-Cmd_")
+{
+        field(DESC, "Soft MID8 Para")
+        field(ZNAM, "Not Checked")
+	field(ONAM, "Checked")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:MID9Set-Cmd_")
+{
+        field(DESC, "Soft MID9 Para")
+        field(ZNAM, "Not Checked")
+	field(ONAM, "Checked")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:MID_Set-Cmd_")
+{
+        field(DESC, "Soft MID Para")
+	field(FLNK, "$(Sys)$(Dev)DB:MID_MassSet-Seq_")	
+}
+
+# MID start
+record(seq, "$(Sys)$(Dev)DB:MID_MassSet-Seq_")
+{
+        field(DESC, "MID Mass Set")
+        field(SELM, "All")
+        field(SDIS, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+        field(DISV, "1")
+
+        field(DOL1, "$(Sys)$(Dev)Cmd:MID1Set-Cmd_ PP")
+        field(DOL2, "$(Sys)$(Dev)Cmd:MID2Set-Cmd_ PP")
+	field(DOL3, "$(Sys)$(Dev)Cmd:MID3Set-Cmd_ PP")
+        field(DOL4, "$(Sys)$(Dev)Cmd:MID4Set-Cmd_ PP")
+	field(DOL5, "$(Sys)$(Dev)Cmd:MID5Set-Cmd_ PP")
+        field(DOL6, "$(Sys)$(Dev)Cmd:MID6Set-Cmd_ PP")
+	field(DOL7, "$(Sys)$(Dev)Cmd:MID7Set-Cmd_ PP")
+        field(DOL8, "$(Sys)$(Dev)Cmd:MID8Set-Cmd_ PP")
+	field(DOL9, "$(Sys)$(Dev)Cmd:MID9Set-Cmd_ PP")
+        field(DOA,  "1")
+
+        field(LNK1, "$(Sys)$(Dev)Cmd:MID1Set-Cmd PP")
+        field(LNK2, "$(Sys)$(Dev)Cmd:MID2Set-Cmd PP")
+        field(LNK3, "$(Sys)$(Dev)Cmd:MID3Set-Cmd PP")
+        field(LNK4, "$(Sys)$(Dev)Cmd:MID4Set-Cmd PP")
+        field(LNK5, "$(Sys)$(Dev)Cmd:MID5Set-Cmd PP")
+        field(LNK6, "$(Sys)$(Dev)Cmd:MID6Set-Cmd PP")
+        field(LNK7, "$(Sys)$(Dev)Cmd:MID7Set-Cmd PP")
+        field(LNK8, "$(Sys)$(Dev)Cmd:MID8Set-Cmd PP")
+        field(LNK9, "$(Sys)$(Dev)Cmd:MID9Set-Cmd PP")
+        field(LNKA, "$(Sys)$(Dev)Cmd:MID_Set-Cmd PP")
+}
+
+# Set the cycle number
+record(longout, "$(Sys)$(Dev)Cnt:MID_Cyc-SP")
+{
+	field(DESC, "Set Cycles")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(bo, "$(Sys)$(Dev)Cnt:MID_Cont-Cmd")
+{
+	field(DESC, "Continuous Cycles")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(FLNK, "$(Sys)$(Dev)Cnt:MID_Cont-SP")
+        field(ASG,  "VAWRITE")
+}
+
+record(longout, "$(Sys)$(Dev)Cnt:MID_Cont-SP")
+{
+	field(DESC, "Continuous Cycles")
+	field(SDIS, "$(Sys)$(Dev)Cnt:MID_Cont-Cmd")
+	field(DISV, "0")
+	field(VAL,  "0")
+	field(OUT,  "$(Sys)$(Dev)Cnt:MID_Cyc-SP")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+# Parameters set for MID mode download to RGA
+record(bo, "$(Sys)$(Dev)Cmd:MID_Set-Cmd")
+{
+	field(DESC, "Set MID Para")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto midSet($(Sys),$(Dev)) $(PORT)")
+        field(ASG,  "VAWRITE")
+}
+
+# Initialize and set up mid scan
+record(bo, "$(Sys)$(Dev)Cmd:MID_Start-Cmd")
+{
+	field(DESC, "Set MID Scan")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto midStart($(Sys),$(Dev)) $(PORT)")
+	field(SDIS, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+        field(DISV, "1")
+	field(FLNK, "$(Sys)$(Dev)Cmd:MID_DataAll-Buf_")
+        field(ASG,  "VAWRITE")
+}
+
+## Send 'data all' command to get all stored data
+record(waveform,"$(Sys)$(Dev)Cmd:MID_DataAll-Buf_")
+{
+	field(DESC, "Data all Response")
+	field(DTYP, "stream")
+	field(INP,  "@hiden_rga.proto midDataAll $(PORT)")
+	field(FTVL, "CHAR")
+	field(NELM, "1000")
+	field(FLNK, "$(Sys)$(Dev)DB:MID-FOut_")
+}
+
+record(fanout, "$(Sys)$(Dev)DB:MID-FOut_")
+{
+	field(DESC, "MID Scan Fanout")
+	field(LNK1, "$(Sys)$(Dev)DB:MID_Start-Seq_")
+	field(LNK2, "$(Sys)$(Dev)ID:MID_Task-I")
+}
+
+# Get task id
+record(longin, "$(Sys)$(Dev)ID:MID_Task-I")
+{
+	field(DESC, "MID Task ID")
+	field(FLNK, "$(Sys)$(Dev)ID:MID_Job-I")
+}
+
+record(longin, "$(Sys)$(Dev)ID:MID_Job-I")
+{
+	field(DESC, "MID Job ID")
+}
+
+# Start to poll 'data' command
+record(seq, "$(Sys)$(Dev)DB:MID_Start-Seq_")
+{
+	field(DESC, "Start MID Scan")
+	field(DO1,  "7")
+	field(DO2,  "3")
+	field(DO3,  "1")
+	field(DO4,  "0")
+	field(LNK1, "$(Sys)$(Dev)Cmd:MID-Buf.SCAN PP")
+	field(LNK2, "$(Sys)$(Dev)Mode:Scan-Sts PP")
+	field(LNK3, "$(Sys)$(Dev)DB:MID_DataAll-Sts_ PP")
+	field(LNK4, "$(Sys)$(Dev)DB:ParProc-FOut_.SCAN PP")
+	field(DLY4, "3")
+}
+
+record(bi, "$(Sys)$(Dev)DB:MID_DataAll-Sts_")
+{
+	field(DESC, "Data all Cmd Proc")
+	field(ZNAM, "No Proc")
+	field(ONAM, "Need Proc")
+}
+
+#  Disable 'data' command
+record(seq, "$(Sys)$(Dev)DB:MID_Stop-Seq_")
+{
+	field(DESC, "Stop MID Scan")
+	field(SELM, "All")
+	field(DO1,  "0")
+	field(DO2,  "0")
+	field(DO3,  "6")
+	field(LNK1, "$(Sys)$(Dev)Cmd:MID-Buf.SCAN PP")
+	field(LNK2, "$(Sys)$(Dev)Mode:Scan-Sts PP")
+	field(LNK3, "$(Sys)$(Dev)DB:ParProc-FOut_.SCAN PP")
+}
+
+## Send 'data' command to poll measurements
+record(waveform,"$(Sys)$(Dev)Cmd:MID-Buf")
+{
+	field(DESC, "Polling data")
+	field(DTYP, "stream")
+	field(INP,  "@hiden_rga.proto midData $(PORT)")
+	field(FTVL, "CHAR")
+	field(NELM, "5000")
+	field(FLNK, "$(Sys)$(Dev)DB:MID-ASub_")
+}
+
+# Hold returned measurement, parse them and put value into different arrays
+record(aSub, "$(Sys)$(Dev)DB:MID-ASub_")
+{
+	field(DESC, "MID Measurement")
+	field(INAM, "asubMIDMeasInit")
+	field(SNAM, "asubMIDMeasRawProc")
+	field(INPA, "$(Sys)$(Dev)Cmd:MID-Buf")
+	field(FTA,  "CHAR")
+	field(NOA,  "5000")	
+	field(INPB, "$(Sys)$(Dev)Mass:MID1-SP")
+	field(FTB,  "SHORT")
+	field(NOB,  "1")
+	field(INPC, "$(Sys)$(Dev)Mass:MID2-SP")
+        field(FTC,  "SHORT")
+        field(NOC,  "1")
+	field(INPD, "$(Sys)$(Dev)Mass:MID3-SP")
+        field(FTD,  "SHORT")
+        field(NOD,  "1")
+	field(INPE, "$(Sys)$(Dev)Mass:MID4-SP")
+        field(FTE,  "SHORT")
+        field(NOE,  "1")
+	field(INPF, "$(Sys)$(Dev)Mass:MID5-SP")
+	field(FTF,  "SHORT")
+	field(NOF,  "1")
+        field(INPG, "$(Sys)$(Dev)Mass:MID6-SP")
+        field(FTG,  "SHORT")
+        field(NOG,  "1")
+        field(INPH, "$(Sys)$(Dev)Mass:MID7-SP")
+        field(FTH,  "SHORT")
+        field(NOH,  "1")
+        field(INPI, "$(Sys)$(Dev)Mass:MID8-SP")
+        field(FTI,  "SHORT")
+        field(NOI,  "1")
+        field(INPJ, "$(Sys)$(Dev)Mass:MID9-SP")
+        field(FTJ,  "SHORT")
+        field(NOJ,  "1")
+	field(INPK, "$(Sys)$(Dev)DB:MID_DataAll-Sts_ ")
+	field(FTK,  "SHORT")
+	field(NOK,  "1")
+	field(INPL, "$(Sys)$(Dev)Cmd:MID_DataAll-Buf_")
+	field(FTL,  "CHAR")
+	field(NOL,  "5000")
+	
+
+	field(OUTA, "$(Sys)$(Dev)DB:MID_Stop-Sts_ PP")
+	field(FTVA, "SHORT")
+	field(NOVA, "1")
+	field(OUTB, "$(Sys)$(Dev)DB:MID1Proc-Sts_ PP")
+	field(FTVB, "SHORT")
+	field(NOVB, "1")	
+	field(OUTC, "$(Sys)$(Dev)DB:MID2Proc-Sts_ PP")
+        field(FTVC, "SHORT")
+        field(NOVC, "1")
+	field(OUTD, "$(Sys)$(Dev)DB:MID3Proc-Sts_ PP")
+        field(FTVD, "SHORT")
+        field(NOVD, "1")
+	field(OUTE, "$(Sys)$(Dev)DB:MID4Proc-Sts_ PP")
+        field(FTVE, "SHORT")
+        field(NOVE, "1")
+	field(OUTF, "$(Sys)$(Dev)DB:MID5Proc-Sts_ PP")
+        field(FTVF, "SHORT")
+        field(NOVF, "1")
+	field(OUTG, "$(Sys)$(Dev)DB:MID1P-I_ PP")
+	field(FTVG, "DOUBLE")	
+	field(NOVG, "1")
+	field(OUTH, "$(Sys)$(Dev)DB:MID2P-I_ PP")
+	field(FTVH, "DOUBLE")	
+	field(NOVH, "1")	
+	field(OUTI, "$(Sys)$(Dev)DB:MID3P-I_ PP")
+        field(FTVI, "DOUBLE")
+        field(NOVI, "1")
+        field(OUTJ, "$(Sys)$(Dev)DB:MID4P-I_ PP")
+        field(FTVJ, "DOUBLE")
+        field(NOVJ, "1")
+	field(OUTK, "$(Sys)$(Dev)DB:MID5P-I_ PP")
+        field(FTVK, "DOUBLE")
+        field(NOVK, "1")
+	
+        field(OUTL, "$(Sys)$(Dev)DB:MID6Proc-Sts_ PP")
+        field(FTVL, "SHORT")
+        field(NOVL, "1")
+        field(OUTM, "$(Sys)$(Dev)DB:MID7Proc-Sts_ PP")
+        field(FTVM, "SHORT")
+        field(NOVM, "1")
+        field(OUTN, "$(Sys)$(Dev)DB:MID8Proc-Sts_ PP")
+        field(FTVN, "SHORT")
+        field(NOVN, "1")
+        field(OUTO, "$(Sys)$(Dev)DB:MID9Proc-Sts_ PP")
+        field(FTVO, "SHORT")
+        field(NOVO, "1")
+        field(OUTP, "$(Sys)$(Dev)DB:MID6P-I_ PP")
+        field(FTVP, "DOUBLE")
+        field(NOVP, "1")
+        field(OUTQ, "$(Sys)$(Dev)DB:MID7P-I_ PP")
+        field(FTVQ, "DOUBLE")
+        field(NOVQ, "1")
+        field(OUTR, "$(Sys)$(Dev)DB:MID8P-I_ PP")
+        field(FTVR, "DOUBLE")
+        field(NOVR, "1")
+        field(OUTS, "$(Sys)$(Dev)DB:MID9P-I_ PP")
+        field(FTVS, "DOUBLE")
+        field(NOVS, "1")
+	field(OUTT, "$(Sys)$(Dev)DB:MID_DataAll-Sts_ PP")
+        field(FTVT, "SHORT")
+        field(NOVT, "1")
+	field(OUTU, "$(Sys)$(Dev)DB:MID_Cyc-Sts_ PP")
+        field(FTVU, "SHORT")
+        field(NOVU, "1")
+}
+
+# Stop polling 'data' command when scan finished
+record(bi, "$(Sys)$(Dev)DB:MID_Stop-Sts_")
+{
+	field(DESC, "MID Stop Sts")
+	field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALA")
+	field(DISV, "0")
+	field(ZNAM, "NO")
+	field(ONAM, "YES")
+	field(FLNK, "$(Sys)$(Dev)Cmd:MID_Stop-Cmd")
+}
+
+# Get processed measurement
+record(bi, "$(Sys)$(Dev)DB:MID1Proc-Sts_")
+{
+        field(DESC, "Mass1 Proc Sts")
+        field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALB")
+        field(DISV, "0")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+}
+
+record(bi, "$(Sys)$(Dev)DB:MID2Proc-Sts_")
+{
+        field(DESC, "Mass2 Proc Sts")
+        field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALC")
+        field(DISV, "0")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+}
+
+record(bi, "$(Sys)$(Dev)DB:MID3Proc-Sts_")
+{
+        field(DESC, "Mass3 Proc Sts")
+        field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALD")
+        field(DISV, "0")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+}
+
+record(bi, "$(Sys)$(Dev)DB:MID4Proc-Sts_")
+{
+        field(DESC, "Mass4 Proc Sts")
+        field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALE")
+        field(DISV, "0")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+}
+
+record(bi, "$(Sys)$(Dev)DB:MID5Proc-Sts_")
+{
+        field(DESC, "Mass5 Proc Sts")
+        field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALF")
+        field(DISV, "0")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+}
+
+record(bi, "$(Sys)$(Dev)DB:MID6Proc-Sts_")
+{
+        field(DESC, "Mass6 Proc Sts")
+        field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALL")
+        field(DISV, "0")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+}
+
+record(bi, "$(Sys)$(Dev)DB:MID7Proc-Sts_")
+{
+        field(DESC, "Mass7 Proc Sts")
+        field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALM")
+        field(DISV, "0")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+}
+
+record(bi, "$(Sys)$(Dev)DB:MID8Proc-Sts_")
+{
+        field(DESC, "Mass8 Proc Sts")
+        field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALN")
+        field(DISV, "0")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+}
+
+record(bi, "$(Sys)$(Dev)DB:MID9Proc-Sts_")
+{
+        field(DESC, "Mass9 Proc Sts")
+        field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALO")
+        field(DISV, "0")
+        field(ZNAM, "NO")
+        field(ONAM, "YES")
+}
+
+# Get measurement value for each mass
+record(ai, "$(Sys)$(Dev)DB:MID1P-I_")
+{
+	field(DESC, "Mass1 Val")
+	field(PREC, "2")
+	field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALB")
+        field(DISV, "0")
+	field(FLNK, "$(Sys)$(Dev)P:MID1-I")
+}
+
+record(ai, "$(Sys)$(Dev)P:MID1-I")
+{
+        field(DESC,  "Mass1 Meas")
+        field(INP,  "$(Sys)$(Dev)DB:MID1P-I_")
+}
+
+record(ai, "$(Sys)$(Dev)DB:MID2P-I_")
+{
+        field(DESC, "Mass2 Val")
+        field(PREC, "2")
+	field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALC")
+        field(DISV, "0")
+	field(FLNK, "$(Sys)$(Dev)P:MID2-I")
+}
+
+record(ai, "$(Sys)$(Dev)P:MID2-I")
+{
+        field(DESC,  "Mass2 Meas")
+        field(INP,  "$(Sys)$(Dev)DB:MID2P-I_")
+}
+
+record(ai, "$(Sys)$(Dev)DB:MID3P-I_")
+{
+        field(DESC, "Mass3 Val")
+        field(PREC, "2")
+	field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALD")
+        field(DISV, "0")
+	field(FLNK, "$(Sys)$(Dev)P:MID3-I")
+}
+
+record(ai, "$(Sys)$(Dev)P:MID3-I")
+{
+        field(DESC,  "Mass3 Meas")
+        field(INP,  "$(Sys)$(Dev)DB:MID3P-I_")
+}
+
+record(ai, "$(Sys)$(Dev)DB:MID4P-I_")
+{
+        field(DESC, "Mass4 Val")
+        field(PREC, "2")
+	field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALE")
+        field(DISV, "0")
+	field(FLNK, "$(Sys)$(Dev)P:MID4-I")
+}
+
+record(ai, "$(Sys)$(Dev)P:MID4-I")
+{
+        field(DESC,  "Mass4 Meas")
+        field(INP,  "$(Sys)$(Dev)DB:MID4P-I_")
+}
+
+record(ai, "$(Sys)$(Dev)DB:MID5P-I_")
+{
+        field(DESC, "Mass5 Val")
+        field(PREC, "2")
+	field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALF")
+        field(DISV, "0")
+	field(FLNK, "$(Sys)$(Dev)P:MID5-I")
+}
+
+record(ai, "$(Sys)$(Dev)P:MID5-I")
+{
+        field(DESC,  "Mass5 Meas")
+        field(INP,  "$(Sys)$(Dev)DB:MID5P-I_")
+}
+
+record(ai, "$(Sys)$(Dev)DB:MID6P-I_")
+{
+        field(DESC, "Mass6 Val")
+        field(PREC, "2")
+        field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALL")
+        field(DISV, "0")
+        field(FLNK, "$(Sys)$(Dev)P:MID6-I")
+}
+
+record(ai, "$(Sys)$(Dev)P:MID6-I")
+{
+        field(DESC,  "Mass6 Meas")
+        field(INP,  "$(Sys)$(Dev)DB:MID6P-I_")
+}
+
+record(ai, "$(Sys)$(Dev)DB:MID7P-I_")
+{
+        field(DESC, "Mass7 Val")
+        field(PREC, "2")
+        field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALM")
+        field(DISV, "0")
+        field(FLNK, "$(Sys)$(Dev)P:MID7-I")
+}
+
+record(ai, "$(Sys)$(Dev)P:MID7-I")
+{
+        field(DESC,  "Mass7 Meas")
+        field(INP,  "$(Sys)$(Dev)DB:MID7P-I_")
+}
+
+record(ai, "$(Sys)$(Dev)DB:MID8P-I_")
+{
+        field(DESC, "Mass8 Val")
+        field(PREC, "2")
+        field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALN")
+        field(DISV, "0")
+        field(FLNK, "$(Sys)$(Dev)P:MID8-I")
+}
+
+record(ai, "$(Sys)$(Dev)P:MID8-I")
+{
+        field(DESC,  "Mass8 Meas")
+        field(INP,  "$(Sys)$(Dev)DB:MID8P-I_")
+}
+
+record(ai, "$(Sys)$(Dev)DB:MID9P-I_")
+{
+        field(DESC, "Mass9 Val")
+        field(PREC, "2")
+        field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALO")
+        field(DISV, "0")
+        field(FLNK, "$(Sys)$(Dev)P:MID9-I")
+}
+
+record(ai, "$(Sys)$(Dev)P:MID9-I")
+{
+        field(DESC,  "Mass9 Meas")
+        field(INP,  "$(Sys)$(Dev)DB:MID9P-I_")
+}
+
+# End of one cycle
+record(bi, "$(Sys)$(Dev)DB:MID_Cyc-Sts_")
+{
+	field(DESC, "MID One Cycle Sts")
+	field(ZNAM, "In Cycle")
+	field(ONAM, "Cmplt Cycle")
+	field(SDIS, "$(Sys)$(Dev)DB:MID-ASub_.VALU")
+	field(DISV, "0")
+	field(FLNK, "$(Sys)$(Dev)DB:ParProc-FOut_")
+}
+
+## Stop the recall of data
+record(bo, "$(Sys)$(Dev)Cmd:MID_Stop-Cmd")
+{
+	field(DESC, "Stop Task")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto midStop($(Sys),$(Dev)) $(PORT)")
+	field(SDIS, "$(Sys)$(Dev)Cmd:MID-Buf.SCAN")
+	field(DISV, "0")
+	field(FLNK, "$(Sys)$(Dev)DB:MID_Stop-Seq_")
+        field(ASG,  "VAWRITE")
+}
+
+# Pause scan
+record(bo, "$(Sys)$(Dev)Cmd:MID_Pause-Cmd")
+{
+	field(DESC, "Pause Scan")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto scanPause $(PORT)")	
+	field(FLNK, "$(Sys)$(Dev)DB:MID_Pause-Cmd_")
+        field(ASG,  "VAWRITE")
+}
+
+#  Disable 'data' command 
+record(bo, "$(Sys)$(Dev)DB:MID_Pause-Cmd_")
+{
+	field(DESC, "Pause Scan")
+	field(VAL,  "0")
+	field(OUT, "$(Sys)$(Dev)Cmd:MID-Buf.SCAN")
+}
+
+# Continue scan
+record(bo, "$(Sys)$(Dev)Cmd:MID_Cont-Cmd")
+{
+	field(DESC, "Continue Scan")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto scanContinue $(PORT)")	
+	field(FLNK, "$(Sys)$(Dev)DB:MID_Cont-Cmd_")
+        field(ASG,  "VAWRITE")
+}
+
+#  Enable 'data' command 
+record(bo, "$(Sys)$(Dev)DB:MID_Cont-Cmd_")
+{
+	field(DESC, "Cont. Scan")
+	field(VAL,  "6")
+	field(OUT, "$(Sys)$(Dev)Cmd:MID-Buf.SCAN")
+}
+
+# Stop at the end of current cycle
+record(bo, "$(Sys)$(Dev)Cmd:MID_StopEnd-Cmd")
+{
+	field(DESC, "Stop Scan at end")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto scanStop $(PORT)")	
+        field(ASG,  "VAWRITE")
+}
+
+#  Local environment
+record(longout, "$(Sys)$(Dev)E:MID_Focus-SP")
+{
+	field(DESC, "MID Focus")
+	field(LOPR, "-200")
+	field(HOPR, "0")
+	field(EGU,  "V")
+	field(VAL,  "-90")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)E:MID_DeltaM-SP")
+{
+	field(DESC, "MID Delta-M")
+	field(LOPR, "-100")
+	field(HOPR, "100")
+	field(EGU,  "%")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)Res:MID-SP")
+{
+	field(DESC, "MID Resolution")
+	field(LOPR, "-100")
+	field(HOPR, "100")
+	field(EGU,  "%")
+	field(VAL,  "0")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)E:MID_Cage-SP")
+{
+	field(DESC, "MID Cage")
+	field(PREC, "1")
+	field(LOPR, "-10")
+	field(HOPR, "10")
+	field(EGU,  "V")
+	field(VAL,  "3")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Enrgy:MID_E-SP")
+{
+	field(DESC, "MID E-Energy")
+	field(LOPR, "4")
+	field(HOPR, "150")
+	field(PREC, "1")
+	field(EGU,  "V")
+	field(VAL,  "70")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Emis:MID-SP")
+{
+	field(DESC, "MID Emission")
+	field(PREC, "3")
+	field(LOPR, "20")
+	field(HOPR, "5000")
+	field(EGU,  "uA")
+	field(VAL,  "200")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(Sys)$(Dev)Mass:MID-SP")
+{
+	field(DESC, "MID Mass")
+	field(PREC, "2")
+	field(LOPR, "0.4")
+	field(HOPR, "100")
+	field(EGU,  "amu")
+	field(VAL,  "5.5")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(longout, "$(Sys)$(Dev)Time:MID_ModeChngDly-SP")
+{
+	field(DESC, "MID Mode-C-Dly")
+	field(LOPR, "0")
+	field(HOPR, "10000000")
+	field(EGU,  "ms")
+	field(VAL,  "1000")
+        field(ASG,  "VAWRITE")
+        info(autosaveFields_pass0, "VAL")
+}
+
+record(bo, "$(Sys)$(Dev)Cmd:MID_Env-Cmd")
+{
+	field(DESC, "Environment Cmd")
+	field(DTYP, "stream")
+	field(OUT,  "@hiden_rga.proto localMIDSet($(Sys),$(Dev)) $(PORT)")	
+	field(SDIS, "$(Sys)$(Dev)DB:ScanMode-Calc_")
+	field(DISV, "1")
+        field(ASG,  "VAWRITE")
+}
+
+

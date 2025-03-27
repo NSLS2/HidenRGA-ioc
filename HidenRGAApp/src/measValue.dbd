@@ -1,0 +1,10 @@
+variable(rga_subDebug,int)
+function(asubScanMeasInit)
+function(asubScanMeasRawProc)
+function(asubScanMeasWfProc)
+function(asubScanDispInit)
+function(asubScanDispProc)
+function(asubMIDMeasInit)
+function(asubMIDMeasRawProc)
+
+

@@ -1,0 +1,15 @@
+as/
+autosave/
+bin/
+db/
+dbd/
+lib/
+^pmc/
+iocBoot/*/envPaths
+O.*/
+\#*#
+*~
+.bzr/
+.bzrignore
+.vscode/
+records.dbl

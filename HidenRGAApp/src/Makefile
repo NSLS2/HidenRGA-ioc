@@ -22,6 +22,7 @@ HidenRGA_DBD += asSupport.dbd
 HidenRGA_DBD += ether_ip.dbd
 HidenRGA_DBD += measValue.dbd
 HidenRGA_DBD += caPutLog.dbd
+HidenRGA_DBD += reccaster.dbd
 
 # HidenRGA_registerRecordDeviceDriver.cpp derives from HidenRGA.dbd
 HidenRGA_SRCS += HidenRGA_registerRecordDeviceDriver.cpp
@@ -37,7 +38,7 @@ HidenRGA_SRCS += measValue.c
 
 # Link in the code from the support library
 HidenRGA_LIBS += asyn calc stream
-HidenRGA_LIBS += devIocStats autosave ether_ip caPutLog
+HidenRGA_LIBS += devIocStats autosave ether_ip caPutLog reccaster
 
 # NOTE: To build SNL programs, SNCSEQ must be defined
 # in the <top>/configure/RELEASE file
